@@ -1,8 +1,8 @@
 <template>
   
    <div @click="toggle">
-      <mdi-eye v-if="modelValue" class="text-2xl text-indigo-500"/>
-      <mdi-eye-off class="transition duration-300 text-gray-300 text-2xl" v-else />
+      <mdi-eye v-if="modelValue" class="text-2xl text-indigo-500 cursor-pointer"/>
+      <mdi-eye-off class="transition duration-300 text-gray-300 text-2xl cursor-pointer" v-else />
    </div>
   
 </template>
