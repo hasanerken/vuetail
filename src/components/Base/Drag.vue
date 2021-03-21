@@ -26,7 +26,6 @@
           v-for="product in productList"
           :key="product.sortNumber"
           :class="product.isVisible ? 'text-gray-900' : 'text-gray-400'"
-          @click="openProductForm(product.sortNumber)"
         >
           <div
             class="col-span-2 sm:col-span-1 handle inline-flex items-center justify-start"
@@ -39,7 +38,10 @@
             </div>
           </div>
           <div class="hidden lg:block lg:col-span-1">Kategori</div>
-          <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+          <div
+            class="col-span-6 hover:bg-indigo-200 sm:col-span-3 lg:col-span-2 cursor-pointer"
+            @click="openProductForm(product.sortNumber)"
+          >
             {{ product.label }}
           </div>
           <div
@@ -76,9 +78,7 @@
         <h1>Ürün Ekleme ve Güncelleme</h1>
       </template>
 
-      <template v-slot:body>
-       
-      </template>
+      <template v-slot:body> </template>
 
       <template v-slot:footer>
         <div class="w-full flex flex-col sm:flex-row">
@@ -109,7 +109,7 @@ export default defineComponent({
     draggable: VueDraggableNext
   },
   setup() {
-        const columns = ref([
+    const columns = ref([
       "Sıra",
       "Kategori",
       "Ürün Adı",
@@ -162,8 +162,7 @@ export default defineComponent({
 
     return {
       columns,
-      productList,
-      
+      productList
     };
   },
   data() {
@@ -194,11 +193,10 @@ export default defineComponent({
       console.log(src, this.productKey);
       // this.txt = src;
     },
-    openProductForm(key){
+    openProductForm(key) {
       console.log("md", key);
-      this.$refs.productFormModal.openModal()
+      this.$refs.productFormModal.openModal();
     }
-
 
     /* endEdit() {
       console.log("mmm")
@@ -214,6 +212,6 @@ export default defineComponent({
 }
 
 .product-row {
-  @apply shadow-lg grid grid-cols-12 text-sm w-full bg-gray-50 border-b border-l border-r p-2 border-indigo-100 items-center cursor-pointer;
+  @apply shadow-lg grid grid-cols-12 text-sm w-full bg-gray-50 border-b border-l border-r p-2 border-indigo-100 items-center ;
 }
 </style>
