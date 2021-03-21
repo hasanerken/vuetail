@@ -28,7 +28,7 @@
           :class="product.isVisible ? 'text-gray-900' : 'text-gray-400'"
         >
           <div
-            class="col-span-2 sm:col-span-1 handle inline-flex items-center justify-start"
+            class="col-span-2 sm:col-span-1 handle inline-flex items-center justify-start cursor-pointer"
           >
             <div class="inline-flex items-center">
               <mdi-drag class="text-xl text-gray-300" />
@@ -39,7 +39,7 @@
           </div>
           <div class="hidden lg:block lg:col-span-1">Kategori</div>
           <div
-            class="col-span-6 hover:bg-indigo-200 sm:col-span-3 lg:col-span-2 cursor-pointer"
+            class="col-span-6 hover:text-indigo-600 sm:col-span-3 lg:col-span-2 cursor-pointer"
             @click="openProductForm(product.sortNumber)"
           >
             {{ product.label }}
