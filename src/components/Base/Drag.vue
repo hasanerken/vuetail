@@ -64,7 +64,7 @@
             {{ product.price }}
           </div>
           <div
-            class="col-span-2 lg:col-span-1 inline-flex items-center justify-center"
+            class="col-span-2 lg:col-span-1 inline-flex items-center justify-center cursor-pointer"
           >
             <EyeOff v-model="product.isVisible" />
           </div>
