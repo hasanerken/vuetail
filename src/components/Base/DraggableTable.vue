@@ -15,7 +15,7 @@
       <div class="col-span-2 lg:col-span-1 text-center">GÖSTER</div>
     </div>
     <draggable
-      class="dragArea w-full"
+      class="dragArea w-full z-0"
       handle=".handle"
       :list="productList"
       @change="log"
@@ -23,7 +23,7 @@
       <transition-group>
         <div
           class="product-row"
-          v-for="product in productList"
+          v-for="product in filteredProducts"
           :key="product.sortNumber"
           :class="product.isVisible ? 'text-gray-900' : 'text-gray-400'"
         >
@@ -102,13 +102,18 @@
 <script>
 import { defineComponent } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 export default defineComponent({
   components: {
     draggable: VueDraggableNext
   },
-  setup() {
+  props: {
+    category: {
+      type: String,
+    },
+  },
+  setup(props) {
     const columns = ref([
       "Sıra",
       "Kategori",
@@ -121,10 +126,14 @@ export default defineComponent({
       "Sil"
     ]);
 
+    const filteredProducts = computed(() => {
+      return props.category === '' ? productList.value : productList.value.filter(item => item.category === props.category)
+    })
+
     const productList = ref([
       {
         sortNumber: 1,
-        category: "APERATİF",
+        category: "Aperatifler",
         label: "Karışık Çerez",
         contents: "Fındık, fıstık, leblebi",
         description:
@@ -136,7 +145,7 @@ export default defineComponent({
       },
       {
         sortNumber: 2,
-        category: "Yemek",
+        category: "Yiyecekler",
         label: "Tatlı Balık Turtası Acem Kızartması",
         contents: "Balık, elma, jambon, bakla, nohut",
         description:
@@ -148,7 +157,7 @@ export default defineComponent({
       },
       {
         sortNumber: 3,
-        category: "MMM",
+        category: "Tatlılar",
         label: "Sütlaç",
         contents: "Süt, pirinç, şeker, tarçın, fındık",
         description:
@@ -157,23 +166,29 @@ export default defineComponent({
         price: 12,
         id: 3,
         isVisible: true
+      },
+      {
+        sortNumber: 4,
+        category: "İçecekler",
+        label: "Şalgam Suyu",
+        contents: "Kara havuç, tuz",
+        description:
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
+        options: "Acılı, acısız",
+        price: 5,
+        id: 4,
+        isVisible: true
       }
     ]);
 
     return {
       columns,
-      productList
+      filteredProducts
     };
   },
   data() {
     return {
       enabled: true,
-      list: [
-        { name: "John", id: 1 },
-        { name: "Joao", id: 2 },
-        { name: "Jean", id: 3 },
-        { name: "Gerard", id: 4 }
-      ],
       dragging: false,
       txt: "",
       productKey: ""

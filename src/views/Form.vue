@@ -1,14 +1,11 @@
 <template>
   <div>
-    <CompanyForm />
-    <CategoryForm />
-    <ProductForm/>
-    
+    <!-- <CompanyForm /> -->
+    <!-- <CategoryForm /> -->
+    <ProductForm />
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="postcss" scoped></style>
