@@ -1,12 +1,3 @@
-<script>
-import { defineComponent } from "vue";
-import ButtonRepo from "@/components/ButtonRepo.vue";
-
-export default defineComponent({
-  components: { ButtonRepo }
-});
-</script>
-
 <template>
   <main>
     <div class="bg-gray-50">
@@ -16,9 +7,12 @@ export default defineComponent({
         <h2
           class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10"
         >
-          Ready to dive in?
+          www.menunuzburada.com
+
           <br />
-          <span class="text-indigo-600">Vite 2.x + Vue 3.x + Tailwind 2.x</span>
+          <span class="text-indigo-600"
+            >QR menünüzü kolayca hazırlama hizmeti</span
+          >
         </h2>
         <div class="flex mt-8 lg:flex-shrink-0 lg:mt-0">
           <div class="inline-flex rounded-md shadow">
@@ -46,21 +40,25 @@ export default defineComponent({
       series of rabies cases springing up around the country.
     </p>
     <!-- ... -->
-    
   </article>
   <button
-      class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-400 focus:outline-none m-4"
-    >
-      Share on Twitter
-    </button>
-    
+    class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-400 focus:outline-none m-4"
+  >
+    Share on Twitter
+  </button>
+
   <div
-      class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none"
-    >
-     <router-link
-              to="/form"
-              class=""
-              >Menu Yönetimi</router-link
-            >
-    </div>
+    class="inline-flex items-center justify-center px-5 py-3 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none"
+  >
+    <router-link to="/products" class="">Ürün Yönetimi</router-link>
+  </div>
 </template>
+
+<script>
+import { defineComponent } from "vue";
+import ButtonRepo from "@/components/ButtonRepo.vue";
+
+export default defineComponent({
+  components: { ButtonRepo }
+});
+</script>

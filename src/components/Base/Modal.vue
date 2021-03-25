@@ -69,7 +69,7 @@ export default {
 }
 
 .dialog-body {
-  @apply p-5 overflow-auto flex flex-col items-stretch;
+  @apply p-1 overflow-auto flex flex-col items-stretch;
 }
 
 .dialog-footer {

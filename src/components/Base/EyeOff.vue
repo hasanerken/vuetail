@@ -9,7 +9,7 @@
 
 <script setup>
 import { ref, defineEmit, defineProps } from "vue";
-const emit = defineEmit("update:modelValue");
+const emit = defineEmit(["update:modelValue"]);
 const props = defineProps({modelValue: Boolean})
 
 const toggle = () => {  

@@ -17,7 +17,7 @@
     <draggable
       class="dragArea w-full z-0"
       handle=".handle"
-      :list="productList"
+      :list="filteredProducts"
       @change="log"
     >
       <transition-group>
@@ -40,9 +40,9 @@
           <div class="hidden lg:block lg:col-span-1">Kategori</div>
           <div
             class="col-span-6 hover:text-indigo-600 sm:col-span-3 lg:col-span-2 cursor-pointer"
-            @click="openProductForm(product.sortNumber)"
+            @click="selectRow(product.id)"
           >
-            {{ product.label }}
+            {{ product.title }}
           </div>
           <div
             class="hidden sm:block sm:col-span-3 lg:col-span-2 sm:line-clamp-2"
@@ -59,7 +59,7 @@
             class="col-span-2 sm:col-span-1 text-center focus:outline-none focus:bg-white focus:py-2 focus:border focus:border-gray-200 focus:rounded-md"
             contenteditable
             @blur="onEdit"
-            @click="setProductKey(product.id)"
+            @click="setProductPrice(product.id)"
           >
             {{ product.price }}
           </div>
@@ -71,32 +71,6 @@
         </div>
       </transition-group>
     </draggable>
-  </div>
-  <div>
-    <Modal ref="productFormModal">
-      <template v-slot:header>
-        <h1>Ürün Ekleme ve Güncelleme</h1>
-      </template>
-
-      <template v-slot:body> </template>
-
-      <template v-slot:footer>
-        <div class="w-full flex flex-col sm:flex-row">
-          <button
-            class="w-full text-indigo-800 hover:text-indigo-500 hover:bg-indigo-50 transition duration-300 ease-in-out px-10 py-2 m-1 rounded-md"
-            @click="$refs.productFormModal.closeModal()"
-          >
-            İptal
-          </button>
-          <button
-            class="w-full bg-indigo-600 text-indigo-50 hover:text-white hover:bg-indigo-400 transition duration-300 ease-in-out px-10 py-2 m-1 rounded-md"
-            @click="$refs.productFormModal.closeModal()"
-          >
-            Kaydet
-          </button>
-        </div>
-      </template>
-    </Modal>
   </div>
 </template>
 <script>
@@ -110,8 +84,8 @@ export default defineComponent({
   },
   props: {
     category: {
-      type: String,
-    },
+      type: String
+    }
   },
   setup(props) {
     const columns = ref([
@@ -127,56 +101,58 @@ export default defineComponent({
     ]);
 
     const filteredProducts = computed(() => {
-      return props.category === '' ? productList.value : productList.value.filter(item => item.category === props.category)
-    })
+      return props.category === ""
+        ? productList.value
+        : productList.value.filter((item) => item.category === props.category);
+    });
 
     const productList = ref([
       {
         sortNumber: 1,
         category: "Aperatifler",
-        label: "Karışık Çerez",
+        title: "Karışık Çerez",
         contents: "Fındık, fıstık, leblebi",
         description:
           "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
         options: "Karışık, Sade",
         price: 8,
-        id: 1,
+        id: "1",
         isVisible: true
       },
       {
         sortNumber: 2,
         category: "Yiyecekler",
-        label: "Tatlı Balık Turtası Acem Kızartması",
+        title: "Tatlı Balık Turtası Acem Kızartması",
         contents: "Balık, elma, jambon, bakla, nohut",
         description:
           "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
         options: "Sade, Ballı",
         price: 14,
-        id: 2,
+        id: "2",
         isVisible: true
       },
       {
         sortNumber: 3,
         category: "Tatlılar",
-        label: "Sütlaç",
+        title: "Sütlaç",
         contents: "Süt, pirinç, şeker, tarçın, fındık",
         description:
           "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
         options: "Fındıklı, Tarçınlı, Sade",
         price: 12,
-        id: 3,
+        id: "3",
         isVisible: true
       },
       {
         sortNumber: 4,
         category: "İçecekler",
-        label: "Şalgam Suyu",
+        title: "Şalgam Suyu",
         contents: "Kara havuç, tuz",
         description:
           "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
         options: "Acılı, acısız",
         price: 5,
-        id: 4,
+        id: "4",
         isVisible: true
       }
     ]);
@@ -199,18 +175,17 @@ export default defineComponent({
       console.log(event);
       // bunu update için kullanacağız.
     },
-    setProductKey(key) {
+    // TODO: setProductPrice ve onEdit birleştirilerek sadece fiyat güncellemesi yaptırılabilir. 
+    setProductPrice(key) {
       this.productKey = key;
     },
-    onEdit(evt) {
-      console.log("m", evt);
+    onEdit(evt) { 
       var src = evt.target.innerHTML;
       console.log(src, this.productKey);
       // this.txt = src;
     },
-    openProductForm(key) {
-      console.log("md", key);
-      this.$refs.productFormModal.openModal();
+    selectRow(id) {
+      this.$emit("selectedRow", id);
     }
 
     /* endEdit() {
@@ -227,6 +202,6 @@ export default defineComponent({
 }
 
 .product-row {
-  @apply shadow-lg grid grid-cols-12 text-sm w-full bg-gray-50 border-b border-l border-r p-2 border-indigo-100 items-center ;
+  @apply shadow-lg grid grid-cols-12 text-sm w-full bg-gray-50 border-b border-l border-r p-2 border-indigo-100 items-center;
 }
 </style>

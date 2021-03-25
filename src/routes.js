@@ -4,24 +4,26 @@ import NotFound from './views/NotFound.vue'
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
-  { path: '/', component: Home, meta: { title: 'Home' } },
+  { path: '/', component: Home, meta: { title: 'www.menunuzburada.com' } },
   {
     path: '/about',
     meta: { title: 'About' },
     component: About,
-    // example of route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    // component: () => import('./views/About.vue')
   },
   {
-    path: '/form',
-    meta: { title: 'Menu Yönetimi' },
-    component: () => import('./views/Form.vue'),
-    // example of route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    // component: () => import('./views/About.vue')
+    path: '/general',
+    meta: { title: 'İşletme Bilgileri' },
+    component: () => import('./views/General.vue'),
+  },
+  {
+    path: '/categories',
+    meta: { title: 'Kategori Yönetimi' },
+    component: () => import('./views/Categories.vue'),
+  },
+  {
+    path: '/products',
+    meta: { title: 'Ürün Yönetimi' },
+    component: () => import('./views/Products.vue'),
   },
   { path: '/:path(.*)', component: NotFound },
 ]
