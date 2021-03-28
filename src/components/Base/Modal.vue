@@ -5,7 +5,7 @@
 
       <div class="dialog-box mt-10 sm:mt-24 md:mt-32">
         <div class="dialog-header">
-          <slot name="header" />
+          <div>{{ title }}</div>
           <div class="dialog-close transition duration-400 ease-in-out">
             <button type="button" class="z-10" @click="closeModal">
               <mdi-close-thick class="font-bold" />
@@ -14,11 +14,8 @@
         </div>
 
         <div class="dialog-body">
-          <slot name="body" />
-        </div>
-
-        <div class="dialog-footer">
-          <slot name="footer" />
+          <slot />
+          
         </div>
       </div>
     </div>
@@ -28,6 +25,11 @@
 <script>
 export default {
   name: "Modal",
+  props: {
+    title: {
+      type: String
+    }
+  },
   data() {
     return {
       show: false
@@ -57,7 +59,7 @@ export default {
 }
 
 .dialog-box {
-  @apply bg-white relative flex flex-col rounded-md z-30  w-5/6 sm:w-2/3 max-w-3xl mx-auto
+  @apply bg-white relative flex flex-col rounded-md z-30  w-5/6 sm:w-2/3 max-w-3xl mx-auto;
 }
 
 .dialog-close {

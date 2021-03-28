@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-row justify-center">
-      <BaseSelect v-model="product.category" :label="'KATEGORİ'" class="mb-5" />
+      <BaseSelect v-model="product.category" :label="'KATEGORİ'" class="mb-5" :items="items" />
     </div>
     <BaseInput
       v-model="product.title"
@@ -18,16 +18,35 @@
     </div>
     <BaseInput v-model="product.contents" :autogrow="true" :label="'İÇERİK'" />
     <BaseInput v-model="product.options" :autogrow="true" :label="'SEÇENEK'" />
-    <BaseInput v-model="product.description" :autogrow="true" :label="'AÇIKLAMALAR'" />
+    <BaseInput
+      v-model="product.description"
+      :autogrow="true"
+      :label="'AÇIKLAMALAR'"
+    />
     <BaseImageLoader />
+  </div>
+    <div class="w-full flex flex-col sm:flex-row">
+    <button
+      class="w-full text-indigo-800 hover:text-indigo-500 hover:bg-indigo-50 transition duration-300 ease-in-out px-10 py-2 m-1 rounded-md"
+      @click="$emit('close')"
+    >
+      İptal
+    </button>
+    <button
+      class="w-full bg-indigo-600 text-indigo-50 hover:text-white hover:bg-indigo-400 transition duration-300 ease-in-out px-10 py-2 m-1 rounded-md"
+      @click="$emit('close')"
+    >
+      Kaydet
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, defineProps } from "vue";
+import { ref, reactive, defineProps, defineEmit } from "vue";
 
-
+const items = ref(["Yiyecekler", "İçecekler", "Aperatifler", "Tatlılar"]);
 const props = defineProps({ productKey: String });
+
 const product = reactive({
   title: "",
   category: "",
@@ -41,12 +60,20 @@ const product = reactive({
   sortNumber: 0
 });
 
+defineEmit(["close"]);
+
 const text = ref("");
 const selection = ref("");
-function hideMenu() {
+const productFormModal = ref(null);
+
+
+function closeProductForm() {
   console.log("...");
+  root.productFormModal.closeModal();
+  
   //isOpen.value = false
 }
+
 </script>
 
 <style lang="postcss" scoped></style>

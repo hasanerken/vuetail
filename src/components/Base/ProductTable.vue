@@ -37,7 +37,7 @@
               </span>
             </div>
           </div>
-          <div class="hidden lg:block lg:col-span-1">Kategori</div>
+          <div class="hidden lg:block lg:col-span-1">{{product.category }}</div>
           <div
             class="col-span-6 hover:text-indigo-600 sm:col-span-3 lg:col-span-2 cursor-pointer"
             @click="selectRow(product.id)"

@@ -8,4 +8,23 @@
   button {
     @apply focus:outline-none;
   }
+
+  .before-enter {
+    opacity: 1; 
+  }
+
+  .enter {
+    animation: anim1 2s;
+  }
+
+  @keyframes anim1 {
+    0% {
+      opacity: 0;
+      
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
 }

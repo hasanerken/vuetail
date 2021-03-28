@@ -1,65 +1,93 @@
 <template>
-  <div class="">
-    <input type="text" v-model="value" class="m-2" />
-    <div class="flex flex-col items-center justify-center">
-      <div id="qrCode" class="p-2">
+  <div class="h-full bg-white py-2 shadow-xl">
+    <div class="flex flex-row justify-center">
+      <BaseButton @click="openCustomerForm">
+        <span class="font-semibold">Yeni İşletme Ekle</span>
+      </BaseButton>
+    </div>
+
+   <div class="flex flex-row flex-wrap items-center justify-center m-2">
+      <div class="bg-gray-100 max-w-3xl m-2 rounded-md border-purple-100 border shadow-xl">
+      <div class="">
         <div
-          class="flex flex-col justify-center items-center m-5 p-2 border border-gray-400 shadow-md"
-          style="width: 300px"
+          class="flex flex-row justify-between items-center bg-indigo-500 rounded-t-md"
         >
-          <h1 class="text-md text-3xl p-2">
-            <span class="text-indigo-500 font-extrabold"> MENÜNÜZ</span
-            ><span class="font-light text-gray-600">BURADA </span>
+          <h1 class="text-xl font-semibold pl-4 text-gray-50 text-center">
+            İşletme Adı
           </h1>
-          <qrcode-vue :value="value" :size="size" level="H" />
-          <div class="text-gray-500 text-md">www.menunuzburada.com</div>
+          <div class="p-1 hover:bg-indigo-400 rounded-full m-2">
+            <mdi-edit
+              class="text-3xl p-1 text-gray-200"
+              @click="openCustomerForm"
+            />
+          </div>
         </div>
       </div>
-      <div class="flex flex-row space-x-2">
-      <button
-        @click="saveQrCode('qrCode')"
-        class="bg-indigo-500 text-gray-50 px-4 py-2 rounded-lg text-lg"
-      >
-        İNDİR (SVG)
-      </button>
-      <button
-        @click="saveQrCodeAsPng('qrCode')"
-        class="bg-indigo-500 text-gray-50 px-4 py-2 rounded-lg text-lg"
-      >
-        İNDİR (PNG)
-      </button>
+      <div class="flex flex-col sm:flex-row">
+        <div class="">    
+          <div class="hidden sm:block">
+            <div
+              class="flex flex-col items-start text-md justify-start font-extralight p-6"
+            >
+              <div class="p-1">
+                <span class="font-bold text-gray-600">ADRES:</span> <br />
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              </div>
+              <div class="p-2">
+                <span class="font-bold text-gray-600">TELEFON:</span> <br />
+                312 200 44 22
+              </div>
+            </div>
+          </div>
+           <div class="flex flex-row justify-between p-4">
+            <div class="">
+              <router-link to="/categories" class="p-1">
+                <div class="flex flex-col justify-center items-center">
+                  <img class="h-36 w-36" src="/categories.svg" alt="" />
+                  <span class="text-md font-bold text-gray-600">
+                    KATEGORİLER
+                  </span>
+                </div>
+              </router-link>
+            </div>
+            <div class="">
+              <router-link to="/products" class="p-1">
+                <div class="flex flex-col items-center">
+                  <img class="h-36 w-36" src="/products.svg" alt="" />
+                  <span class="text-md font-bold text-gray-600"> ÜRÜNLER </span>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
+        <div class="sm:ml-12">
+          <Qrcode :customerUrl="customerUrl" />
+        </div>
       </div>
     </div>
+   </div>
+  </div>
+  <div>
+    <Modal ref="customerFormModal" :title="'ÜRÜN BİLGİLERİ'">
+      <CustomerForm :customerKey="customerKey" @close="closeCustomerForm" />
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import QrcodeVue from "qrcode.vue";
-import * as htmlToImage from "html-to-image";
-import { toSvg, toPng } from "html-to-image";
-
-const value = ref("www.google.com");
-const size = ref(240);
-
-function saveQrCode(value) {
-  var qr1 = document.getElementById(value);
-  htmlToImage.toSvg(qr1).then(function (dataUrl) {
-    var link = document.createElement("a");
-    link.download = `${value}.svg`;
-    link.href = dataUrl;
-    link.click();
-  });
+const customerFormModal = ref(null);
+const customerKey = ref("");
+const customerUrl = ref(""); // TODO: bu databaseden gelecek!
+const selection = ref("");
+function closeCustomerForm() {
+  console.log("...");
+  customerFormModal.value.closeModal();
+  //isOpen.value = false
 }
-
-function saveQrCodeAsPng(value) {
-  var qr1 = document.getElementById(value);
-  htmlToImage.toPng(qr1).then(function (dataUrl) {
-    var link = document.createElement("a");
-    link.download = `${value}.png`;
-    link.href = dataUrl;
-    link.click();
-  });
+function openCustomerForm(key) {
+  console.log("md", key);
+  customerFormModal.value.openModal();
 }
 </script>
 

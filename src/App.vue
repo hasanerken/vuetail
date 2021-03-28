@@ -1,24 +1,57 @@
 <template>
   <main>
-    <header class="bg-gray-50 p-2" v-if="$route.meta.title">
-      <div class="flex flex-row justify-between items-center">
+    <header class="bg-white" v-if="$route.meta.title">
+      <div class="flex flex-row justify-center sm:justify-between items-center">
         <router-link to="/">
-          <div class="flex flex-col text-center">
-            <h1 class="text-md sm:text-2xl md:text-3xl">
-              <span class="text-indigo-500 font-extrabold"> MENÜNÜZ</span
-              ><span class="font-light text-gray-600">BURADA </span>
-            </h1>
-            <h3 class="text-xxs sm:text-sm leading-tight text-indigo-900">
-              - {{ $route.meta.title }} -
-            </h3>
+          <div
+            class="flex flex-col justify-center sm:justify-start text-center"
+          >
+            <div class="p-5">
+              <h1 class="text-3xl md:text-3xl">
+                <span class="text-indigo-500 font-extrabold"> MENÜNÜZ</span>
+               
+                <span class="font-light text-gray-600">BURADA </span>
+              </h1>
+              <h3 class="text-sm sm:text-md leading-tight text-gray-700">
+                - {{ $route.meta.title }} -
+              </h3>
+            </div>
+           
           </div>
         </router-link>
-        <div class="">
+
+        
+        <div :class="$route.path === '/' ? 'hidden' : ''">
           <div
             v-for="(page, index) in pages"
             :key="index"
-            :class="$route.path === page.path ? 'border-indigo-500' : 'border-gray-50' "
-            class="inline-flex items-center justify-center p-0 font-medium leading-6 text-gray-800 hover:text-indigo-500 transition duration-1000 ease-in-out hover:border-green-300 hover:border-b-2 border-b-2 mx-2 focus:outline-none"
+            :class="
+              $route.path === page.path ? 'border-indigo-500' : 'border-white'
+            "
+            class="hidden sm:inline-flex items-center justify-center p-0 font-medium leading-6 text-gray-800 hover:text-indigo-500 transition duration-1000 ease-in-out hover:border-green-300 hover:border-b-2 border-b-2 mx-2 focus:outline-none"
+          >
+            <router-link :to="page.path" class="sm:px-2 sm:py-1">
+              <div class="flex flex-col md:flex-row items-center">
+                <img
+                  class="h-10 w-10 sm:h-12 sm:w-12 md:h-15 md:w-15 sm:p-1"
+                  :src="page.icon"
+                  alt=""
+                />
+                <span class="text-xxs sm:text-sm md:text-md text-gray-600">{{
+                  page.title
+                }}</span>
+              </div>
+            </router-link>
+          </div>
+        </div>
+        <div :class="$route.path === '/' ? '' : 'hidden'">
+          <div
+            v-for="(page, index) in landing"
+            :key="index"
+            :class="
+              $route.path === page.path ? 'border-indigo-500' : 'border-white'
+            "
+            class="hidden  sm:inline-flex items-center justify-center p-0 font-medium leading-6 text-gray-800 hover:text-indigo-500 transition duration-1000 ease-in-out hover:border-green-300 hover:border-b-2 border-b-2 mx-2 focus:outline-none"
           >
             <router-link :to="page.path" class="sm:px-2 sm:py-1">
               <div class="flex flex-col md:flex-row items-center">
@@ -51,6 +84,16 @@ const pages = ref([
     icon: "/categories.svg"
   },
   { path: "/products", title: "ÜRÜNLER", icon: "/products.svg" }
+]);
+
+const landing = ref([
+  { path: "/general", title: "GENEL BİLGİLER", icon: "/general.svg" },
+  {
+    path: "/categories",
+    title: "FİYATLANDIRMA",
+    icon: "/categories.svg"
+  },
+  { path: "/products", title: "İLETİŞİM", icon: "/products.svg" }
 ]);
 </script>
 

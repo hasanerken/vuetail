@@ -41,15 +41,17 @@
         </div>
       </div>
     </div>
+  
   </div>
 </template>
 
 <script setup>
-import { ref, defineEmit } from "vue";
+import { ref, defineEmit, defineProps } from "vue";
 const emit = defineEmit(["update:modelValue"]);
 const isOpen = ref(false);
 const selectedItem = ref("Kategoriler");
-const items = ref(["Yiyecekler", "İçecekler", "Aperatifler", "Tatlılar"]);
+defineProps({items: Array})
+
 function setSelectedItem(item) {
   selectedItem.value = item;
   isOpen.value = !isOpen.value;

@@ -4,7 +4,7 @@ import NotFound from './views/NotFound.vue'
 
 /** @type {import('vue-router').RouterOptions['routes']} */
 export const routes = [
-  { path: '/', component: Home, meta: { title: 'www.menunuzburada.com' } },
+  { path: '/', component: Home, meta: { title: 'menunuzburada.com' } },
   {
     path: '/about',
     meta: { title: 'About' },
