@@ -6,7 +6,7 @@
   </div>
   <CategoryTable @selectedRow="openCategoryForm" />
   <!-- CATEGORY FORM MODAL  -->
-  <Modal ref="categoryFormModal" :title="'KATEGORİ BİLGİLERİ'">
+  <Modal ref="categoryFormModal" :title="'KATEGORİ BİLGİLERİ'" > 
     <CategoryForm :categoryKey="catogeryKey" @close="closeCategoryForm" />
   </Modal>
 </template>

@@ -4,16 +4,16 @@
       <button
         v-if="!imageUrl"
         @click="pickImage"
-        class="bg-pink-600 text-pink-50 w-11/12 px-4 py-2 rounded-lg"
+        class="bg-pink-600 text-pink-50 px-4 py-2 rounded-lg"
       >
-        EKLE
+        RESİM EKLE
       </button>
       <button
         v-else
-        class="bg-pink-200 text-pink-800s w-11/12 px-4 py-2 rounded-lg"
+        class="bg-pink-200 text-pink-800 px-4 py-2 rounded-lg"
         @click="removeImage"
       >
-        KALDIR
+        RESMİ KALDIR
       </button>
 
       <input
@@ -23,13 +23,13 @@
         style="display: none"
         accept="image/*"
       />
-      <img v-if="imageUrl" class="m-1" :src="imageUrl" />
+      <img v-if="imageUrl" class="h-24 m-3" :src="imageUrl" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, defineEmit } from "vue";
 const imageUrl = ref("");
 const imageInput = ref("");
 const image = ref(null);
@@ -38,6 +38,8 @@ function pickImage() {
   console.log("mmmm");
   imageInput.value.click();
 }
+
+const emit = defineEmit(['imageUploaded'])
 
 function imagePicked(event) {
   const files = event.target.files;
@@ -56,8 +58,8 @@ function imagePicked(event) {
     rawImage.src = URL.createObjectURL(files[0]);
   })
     .then((rawImage) => {
-      console.log(rawImage);
       return new Promise(function (resolve, reject) {
+        console.log("raw", rawImage);
         let canvas = document.createElement("canvas");
         const MAX_WIDTH = 400;
         const scaleSize = MAX_WIDTH / rawImage.width;
@@ -70,9 +72,13 @@ function imagePicked(event) {
         canvas.toBlob(function (blob) {
           resolve(URL.createObjectURL(blob));
         }, "image/webp");
+
+        
       });
     })
     .then((imageURL) => {
+     
+      emit("imageUploaded", imageURL )
       return new Promise(function (resolve, reject) {
         let scaledImg = new Image();
 
@@ -81,10 +87,14 @@ function imagePicked(event) {
         });
 
         scaledImg.setAttribute("src", imageURL);
-      });
+      
+      })
     })
     .then((data) => {
+      console.log("ssss", data)
       imageUrl.value = data.imageURL;
+      emit("imageUploaded", data.imageURL)
+      
     });
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-row justify-center">
-      <BaseSelect v-model="product.category" :label="'KATEGORİ'" class="mb-5" :items="items" />
+      <BaseSelect v-model="product.category" :label="'KATEGORİ'" class="mb-5" :items="items" title="KATEGORİLER" />
     </div>
     <BaseInput
       v-model="product.title"
@@ -14,7 +14,7 @@
     />
     <div class="flex flex-row items-center justify-center">
       <BaseInput v-model="product.price" :label="'FİYAT'" class="w-full" />
-      <EyeOff class="mx-10" v-model="product.isVisible" />
+      <EyeOff class="mx-10" v-model="product.isVisible"  />
     </div>
     <BaseInput v-model="product.contents" :autogrow="true" :label="'İÇERİK'" />
     <BaseInput v-model="product.options" :autogrow="true" :label="'SEÇENEK'" />
@@ -23,7 +23,7 @@
       :autogrow="true"
       :label="'AÇIKLAMALAR'"
     />
-    <BaseImageLoader />
+    <BaseImageLoader class="mb-10"/>
   </div>
     <div class="w-full flex flex-col sm:flex-row">
     <button
@@ -43,6 +43,7 @@
 
 <script setup>
 import { ref, reactive, defineProps, defineEmit } from "vue";
+import { db } from "../directives/firebase"
 
 const items = ref(["Yiyecekler", "İçecekler", "Aperatifler", "Tatlılar"]);
 const props = defineProps({ productKey: String });
@@ -68,11 +69,10 @@ const productFormModal = ref(null);
 
 
 function closeProductForm() {
-  console.log("...");
   root.productFormModal.closeModal();
-  
   //isOpen.value = false
 }
+
 
 </script>
 

@@ -6,6 +6,7 @@
           class="flex flex-col justify-center items-center m-2 p-2 border border-gray-400 rounded-md bg-white"
           style="width: 300px"
         >
+        
           <h1 class="text-md text-3xl p-2">
             <span class="text-indigo-500 font-extrabold"> MENÜNÜZ</span
             ><span class="font-light text-gray-600">BURADA </span>

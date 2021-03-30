@@ -39,14 +39,14 @@
           </div>
           
           <div
-            class="col-span-4 sm:col-span-3 hover:text-indigo-600 cursor-pointer"
+            class="col-span-4 sm:col-span-2 hover:text-indigo-600 cursor-pointer"
             @click="selectRow(category.id)"
           >
             {{ category.title }}
           </div>
           
           
-          <div class="hidden sm:col-span-4 sm:line-clamp-2">
+          <div class="hidden sm:col-span-5 sm:line-clamp-2">
            {{ category.description }}
           </div>
           <div

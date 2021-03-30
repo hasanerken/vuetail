@@ -1,7 +1,7 @@
 <template>
   <div
     v-clickoutside="hideMenu"
-    class="inline-flex flex-col w-11/12 sm:w-3/5 md:w-2/5 lg:w-1/5 relative cursor-pointer"
+    class="inline-flex flex-col w-11/12 relative cursor-pointer"
   >
     <div
       class="flex flex-row p-3 justify-between text-gray-900 border border-gray-200 hover:border-indigo-200 items-center"
@@ -48,9 +48,9 @@
 <script setup>
 import { ref, defineEmit, defineProps } from "vue";
 const emit = defineEmit(["update:modelValue"]);
+const props = defineProps({items: Array, title: String})
 const isOpen = ref(false);
-const selectedItem = ref("Kategoriler");
-defineProps({items: Array})
+const selectedItem = ref(props.title);
 
 function setSelectedItem(item) {
   selectedItem.value = item;
@@ -58,7 +58,7 @@ function setSelectedItem(item) {
   emit("update:modelValue", item);
 }
 function cleanSelection() {
-  selectedItem.value = "Kategoriler";
+  selectedItem.value = props.title;
   isOpen.value = true;
   emit("update:modelValue", "");
 }

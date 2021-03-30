@@ -3,10 +3,10 @@
     <div class="modal" v-if="show">
       <div class="backdrop" @click="closeModal" />
 
-      <div class="dialog-box mt-10 sm:mt-24 md:mt-32">
+      <div class="dialog-box mt-10 sm:mt-12 md:mt-16">
         <div class="dialog-header">
           <div>{{ title }}</div>
-          <div class="dialog-close transition duration-400 ease-in-out">
+          <div class="dialog-close transition duration-1000 ease-in-out">
             <button type="button" class="z-10" @click="closeModal">
               <mdi-close-thick class="font-bold" />
             </button>
@@ -59,7 +59,7 @@ export default {
 }
 
 .dialog-box {
-  @apply bg-white relative flex flex-col rounded-md z-30  w-5/6 sm:w-2/3 max-w-3xl mx-auto;
+  @apply bg-white relative flex flex-col rounded-md z-30   max-w-sm mx-auto ;
 }
 
 .dialog-close {
@@ -71,7 +71,7 @@ export default {
 }
 
 .dialog-body {
-  @apply p-1 overflow-auto flex flex-col items-stretch;
+  @apply p-1 overflow-y-auto flex flex-col items-stretch;
 }
 
 .dialog-footer {

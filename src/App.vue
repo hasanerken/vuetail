@@ -53,7 +53,7 @@
             "
             class="hidden  sm:inline-flex items-center justify-center p-0 font-medium leading-6 text-gray-800 hover:text-indigo-500 transition duration-1000 ease-in-out hover:border-green-300 hover:border-b-2 border-b-2 mx-2 focus:outline-none"
           >
-            <router-link :to="page.path" class="sm:px-2 sm:py-1">
+            <a :href="page.path" class="sm:px-2 sm:py-1">
               <div class="flex flex-col md:flex-row items-center">
                 <img
                   class="h-10 w-10 sm:h-12 sm:w-12 md:h-15 md:w-15 sm:p-1"
@@ -64,7 +64,7 @@
                   page.title
                 }}</span>
               </div>
-            </router-link>
+            </a>
           </div>
         </div>
       </div>
@@ -87,14 +87,18 @@ const pages = ref([
 ]);
 
 const landing = ref([
-  { path: "/general", title: "GENEL BİLGİLER", icon: "/general.svg" },
+  { path: "#benefits", title: "GENEL BİLGİLER", icon: "/benefits.png" },
   {
-    path: "/categories",
+    path: "#pricing",
     title: "FİYATLANDIRMA",
-    icon: "/categories.svg"
+    icon: "/pricing.png"
   },
-  { path: "/products", title: "İLETİŞİM", icon: "/products.svg" }
+  { path: "#contact", title: "İLETİŞİM", icon: "/contact.png" }
 ]);
 </script>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss">
+html {
+  scroll-behavior: smooth;
+}
+</style>

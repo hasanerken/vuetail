@@ -1,8 +1,13 @@
 <template>
   <div class="h-full bg-gray-50 py-2 shadow-xl">
-    <div class="text-left sm:text-left mx-5">
-      <BaseSelect v-model="selection" :items="items" />  
-    </div>
+    <div class="flex flex-row text-left sm:text-left mx-5">
+      <BaseSelect class="w-1/2" v-model="selection" :items="items" title="KATEGORİLER" />
+      <div class="w-1/2 flex justify-center">
+      <BaseButton @click="openProductForm">
+        <span class="font-semibold">YENİ ÜRÜN</span>
+      </BaseButton>
+    </div></div>
+
     <ProductTable :category="selection" @selectedRow="openProductForm" />
   </div>
   <div>
