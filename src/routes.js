@@ -11,17 +11,17 @@ export const routes = [
     component: About,
   },
   {
-    path: '/general',
+    path: '/menus',
     meta: { title: 'İşletme Bilgileri' },
-    component: () => import('./views/General.vue'),
+    component: () => import('./views/Menus.vue'),
   },
   {
-    path: '/categories',
+    path: '/categories/:alias',
     meta: { title: 'Kategori Yönetimi' },
     component: () => import('./views/Categories.vue'),
   },
   {
-    path: '/products',
+    path: '/products/:alias',
     meta: { title: 'Ürün Yönetimi' },
     component: () => import('./views/Products.vue'),
   },

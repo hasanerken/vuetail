@@ -77,14 +77,14 @@
 <script setup>
 import { ref } from "vue";
 const pages = ref([
-  { path: "/general", title: "BİLGİLER", icon: "/general.svg" },
-  {
+  { path: "/menus", title: "MENÜLER", icon: "/design.svg" },
+/*   {
     path: "/categories",
     title: "KATEGORİLER",
     icon: "/categories.svg"
   },
   { path: "/products", title: "ÜRÜNLER", icon: "/products.svg" }
-]);
+ */]);
 
 const landing = ref([
   { path: "#benefits", title: "GENEL BİLGİLER", icon: "/benefits.png" },

@@ -1,6 +1,6 @@
 <template>
   <div @click="toggle" class="flex items-center">
-    {{ showImageOnly }}
+  
     <div class="">
       <mdi-eye
         v-if="modelValue"
@@ -11,7 +11,6 @@
         v-else
       />
     </div>
-    <div v-if="!imageOnly" :class="modelValue ? 'text-indigo-700' : 'text-gray-400 line-through' " class="text-sm  p-2 text-center ">Menüde Gözüksün</div>
   </div>
 </template>
 

@@ -1,15 +1,22 @@
 <template>
   <div class="">
+    {{ selectedMenu }}
     <BaseSelect
       :items="['Ankara', 'İstanbul', 'İzmir', 'Bursa']"
+      :currentSelection="menu.city"
       title="İL"
       class="mb-3 m-1"
       v-model="menu.city"
     />
-    <BaseInput v-model="menu.title" :label="'ŞİRKET ADI'" />
+    <BaseInput v-model="menu.title" :label="'ŞİRKET ADI'" :class="typeof selectedMenu === 'object' ? '' : '' " />
     <BaseInput v-model="menu.phone" :label="'TELEFON'" />
     <BaseInput v-model="menu.address" :label="'ADRES'" :autogrow="true" />
-    <BaseImageLoader class="mb-10" @imageUploaded="updateImage" />
+    <BaseImageLoader
+      class="mb-10"
+      @imageUploaded="updateImage"
+      :existingImageUrl="menu.imageUrl"
+      @imageRemoved="menu.imageUrl = ''"
+    />
   </div>
   <div class="w-full flex flex-col sm:flex-row">
     <button
@@ -33,22 +40,26 @@ import {
   computed,
   defineEmit,
   defineProps,
+  getCurrentInstance
 } from "vue";
 import { db, storage } from "../directives/firebase";
 
+const props = defineProps({ selectedMenu: Object });
+const emit = defineEmit(["close"]);
+const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal
+
 const menu = reactive({
-  city: "",
-  title: "",
-  alias: "",
-  phone: null,
-  address: null,
-  imageUrl: null
+  city: props.selectedMenu?.general.city || "",
+  title: props.selectedMenu?.general.title || "",
+  alias: props.selectedMenu?.general.alias || "",
+  phone: props.selectedMenu?.general.phone || "",
+  address: props.selectedMenu?.general.address || "",
+  imageUrl: props.selectedMenu?.general.imageUrl || "",
+  isActive: props.selectedMenu?.general.isActive || true
 });
 
-const props = defineProps({ menuKey: String });
-const emit = defineEmit(["close"]);
-
 const userId = "user3";
+
 // TODO: databaseden gelmezse üretilecek, değiştirilirse üretilecek!
 const alias = computed(() => {
   let computedAlias = "";
@@ -75,9 +86,6 @@ const alias = computed(() => {
   return computedAlias;
 });
 
-
-
-
 let file;
 async function updateImage(url) {
   file = await fetch(url)
@@ -88,16 +96,32 @@ async function updateImage(url) {
 }
 
 async function saveMenu() {
-  const menuRef = db.ref(userId).child(alias.value + "/general")
+  let menuRef = "";
+  let userRef = "";
+  
+   
   if (menu.alias === "") {
     menu.alias = alias.value;
+    menuRef = db.ref(userId).child(alias.value + "/general");
+    db.ref('users').child(userId).push().set(alias.value);
+  } else {
+    menuRef = db.ref(userId).child(menu.alias + "/general");
   }
 
-  console.log(menu);
+  if (
+    menu.title === "" ||
+    menu.phone === "" ||
+    menu.address === "" ||
+    menu.city === ""
+  ) {
+    swalAlert(
+      "Lütfen, menünün ait olduğu işletme bilgilerini eksiksiz giriniz."
+    );
+  } else {
+    menuRef.set(menu);
+    
+  }
 
-  menuRef.set(menu);
-
-  console.log;
   if (file) {
     storage
       .ref("logos/" + alias.value + ".webp")
@@ -117,4 +141,5 @@ async function saveMenu() {
 }
 </script>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+</style>

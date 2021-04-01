@@ -9,7 +9,7 @@
         </div>
       </div>
       <div :class="hasIcon ? 'col-span-10' : 'col-span-12'">
-        <div class="relative border-b focus-within:border-indigo-500">
+        <div class="relative border-b focus-within:border-indigo-500" @keydown.enter.prevent>
           <span
             v-if="autogrow"
             role="text-box"
@@ -20,6 +20,7 @@
             @blur="onEdit"
             class="text block w-full appearance-none focus:outline-none bg-transparent text-gray-800"
           >
+          {{ modelValue }}
           </span>
           <input
             v-else

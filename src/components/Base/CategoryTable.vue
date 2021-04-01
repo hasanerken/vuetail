@@ -1,27 +1,26 @@
 <template>
   <div class="m-1 sm:m-4 z-0">
-    <div class="table-header">
+    <div class="table-header h-12">
       <div class="col-span-2 sm:col-span-1 inline-flex items-center">
-        <RoundedButton />
+       SIRA
       </div>
       <div class="col-span-3 sm:col-span-2">RESİM</div>
-      <div class="col-span-4 sm:col-span-3 text-left">
-        KATEGORİ
-      </div>
+      <div class="col-span-3 sm:col-span-3 text-left">KATEGORİ</div>
       <div class="hidden sm:block sm:col-span-4">TANITIM</div>
-      <div class="col-span-3 sm:col-span-2 text-center">GÖSTER</div>
+      <div class="col-span-2 sm:col-span-1 text-center">SİL</div>
+      <div class="col-span-2 sm:col-span-1 text-center">GÖSTER</div>
     </div>
-    <draggable
+    <VueDraggableNext
       class="dragArea w-full z-0"
       handle=".handle"
-      :list="categoryList"
+      :list="categories"
       @change="log"
     >
       <transition-group>
         <div
           class="category-row"
-          v-for="category in categoryList"
-          :key="category.sortNumber"
+          v-for="(category, index) in categories"
+          :key="category.id"
           :class="category.isVisible ? 'text-gray-900' : 'text-gray-400'"
         >
           <div
@@ -30,124 +29,133 @@
             <div class="inline-flex items-center">
               <mdi-drag class="text-xl text-gray-300" />
               <span class="text-xs">
-                {{ category.sortNumber }}
+                {{ index + 1}}
               </span>
             </div>
           </div>
           <div class="col-span-3 sm:col-span-2">
-            <img src="/logo.svg" alt="" class="h-16 w-16">
+            <img
+              v-if="category.imageUrl"
+              :src="category.imageUrl"
+              alt=""
+              class="h-16"
+            />
+            <div v-else class="">
+              <div
+                class="w-12 hover:bg-indigo-200 transition duration-300 h-12 flex items-center justify-center rounded-full"
+              >
+                <mdi-cloud-upload
+                  class="text-2xl text-indigo-600 cursor-pointer"
+                  @click="selectRow(category)"
+                />
+              </div>
+            </div>
           </div>
-          
+
           <div
-            class="col-span-4 sm:col-span-2 hover:text-indigo-600 cursor-pointer"
-            @click="selectRow(category.id)"
+            class="col-span-3 sm:col-span-2 hover:text-indigo-600 cursor-pointer"
+            @click="selectRow(category)"
           >
             {{ category.title }}
           </div>
-          
-          
+
           <div class="hidden sm:col-span-5 sm:line-clamp-2">
-           {{ category.description }}
+            {{ category.description }}
           </div>
           <div
-            class="col-span-3 sm:col-span-2 inline-flex items-center justify-center cursor-pointer"
+            class="col-span-2 sm:col-span-1 inline-flex items-center justify-center cursor-pointer"
           >
-            <EyeOff v-model="category.isVisible" />
+            <div
+              class="p-1 duration-300 transition hover:bg-gray-400 rounded-full m-2"
+            >
+              <mdi-delete
+                class="text-3xl p-1 text-gray-300"
+                @click="deleteCategory(category.id)"
+              />
+            </div>
+          </div>
+          <div
+            class="col-span-2 sm:col-span-1 inline-flex items-center justify-center cursor-pointer"
+          >
+            <EyeOff
+              v-model="category.isVisible"
+              @update:modelValue="updateVisibility(category)"
+            />
           </div>
         </div>
       </transition-group>
-    </draggable>
+    </VueDraggableNext>
   </div>
 </template>
-<script>
-import { defineComponent } from "vue";
+
+
+<script setup>
 import { VueDraggableNext } from "vue-draggable-next";
-import { ref, computed } from "vue";
+import {
+  ref,
+  onMounted,
+  defineEmit,
+  getCurrentInstance
+} from "vue";
+import { db } from "../../directives/firebase";
+import { useRoute } from "vue-router";
 
-export default defineComponent({
-  components: {
-    draggable: VueDraggableNext
-  },
-  props: {
-    category: {
-      type: String
-    }
-  },
-  setup(props) {
-   
-    
+const route = useRoute();
+const alias = route.params.alias;
 
-    const categoryList = ref([
-      {
-        sortNumber: 1,
-        title: "Atıştırmalık",
-        description:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
-        id: "1",
-        isVisible: true
-      },
-      {
-        sortNumber: 2,
-        title: "Yiyecekler",
-        description:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
-        id: "2",
-        isVisible: true
-      },
-      {
-        sortNumber: 3,
-        title: "Tatlılar",
-        description:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
-        id: "3",
-        isVisible: true
-      },
-      {
-        sortNumber: 4,
-        title: "İçecekler",
-        description:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sapiente, fuga asperiores distinctio inventore nisi suscipit.",
-        id: "4",
-        isVisible: true
-      }
-    ]);
+const emit = defineEmit(["selectedRow"]);
+const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
-    return {
-      categoryList
-    };
-  },
-  data() {
-    return {
-      enabled: true,
-      dragging: false,
-      txt: "",
-      categoryKey: ""
-    };
-  },
-  methods: {
-    log(event) {
-      console.log(event);
-      // bunu update için kullanacağız.
-    },
-    // TODO: setcategoryPrice ve onEdit birleştirilerek sadece fiyat güncellemesi yaptırılabilir. 
-    setcategoryPrice(key) {
-      this.categoryKey = key;
-    },
-    onEdit(evt) { 
-      var src = evt.target.innerHTML;
-      console.log(src, this.categoryKey);
-      // this.txt = src;
-    },
-    selectRow(id) {
-      this.$emit("selectedRow", id);
-    }
+const enabled = ref(true);
+const dragging = ref(false);
+const txt = ref("");
+const categories = ref([]);
 
-    /* endEdit() {
-      console.log("mmm")
-      // this.$el.querySelector("#editable").blur();
-    } */
-  }
+const userId = "user3";
+
+function log(event) {
+    categories.value.forEach((item, index) => {
+      db.ref(userId)
+      .child(alias + "/categories/" + item.id)
+      .update({ sortNumber: index });
+    })
+}
+
+function selectRow(category) {
+  emit("selectedRow", category);
+}
+
+// DATABASE MANAGEMENT
+onMounted(() => {
+  db.ref(userId)
+    .child(alias)
+    .on("value", (snapshot) => {
+      const data = snapshot.val();
+      const tempCategories = Object.values(data.categories)
+      categories.value = tempCategories.sort((a,b) => a.sortNumber - b.sortNumber )
+    });
 });
+
+function deleteCategory(categoryId) {
+  swalAlert({
+    title: "Kategoriyi silmek istediğinizden emin misiniz?",
+    showDenyButton: true,
+    confirmButtonText: `Evet, silelim.`,
+    denyButtonText: `Hayır, kalsın.`
+  }).then((result) => {
+    if (result.isConfirmed) {
+      db.ref(userId)
+        .child(alias + "/categories/" + categoryId)
+        .remove();
+    }
+  });
+}
+
+function updateVisibility(category) {
+  db.ref(userId)
+    .child(alias + "/categories/" + category.id)
+    .update({ isVisible: category.isVisible });
+}
 </script>
 
 <style lang="postcss" scoped>

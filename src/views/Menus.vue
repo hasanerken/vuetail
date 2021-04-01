@@ -1,9 +1,14 @@
 <template>
   <div class="h-full bg-white py-2 shadow-xl">
     <div class="flex flex-row justify-center">
-      <BaseButton @click="openMenuForm">
-        <span class="font-semibold">Yeni İşletme Ekle</span>
+      <BaseButton @click="openMenuForm('new')">
+        <span class="font-semibold">YENİ MENÜ</span>
       </BaseButton>
+    </div>
+    <div v-if="mainUser === 'admin' " class="m-4 flex justify-center">
+    <select name="customers" id="customers" v-model="selectedCustomer" @change="updateUserId(selectedCustomer)">
+      <option v-for="(customer, index) in customers" :key="index">{{customer.customerId}}</option>
+    </select>
     </div>
     <div class="flex flex-row flex-wrap justify-center items-stretch">
       <div v-for="(menu, key) in menus" :key="key">
@@ -13,22 +18,34 @@
           >
             <div class="">
               <div
-                class="flex flex-row justify-between items-center bg-indigo-500 rounded-t-md"
+                :class="menu.general.isActive ? 'bg-indigo-600' : 'bg-gray-400'"
+                class="flex flex-row justify-between items-center rounded-t-md"
               >
                 <h1 class="text-xl font-semibold pl-4 text-gray-50 text-center">
                   {{ menu.general.title }}
                 </h1>
                 <div class="flex flex-row">
+                  <div class="flex flex-row items-center p-2">
+                    <span
+                      v-if="!menu.general.isActive"
+                      class="font-bold px-2 text-xs text-gray-900"
+                      >MENU KAPALI</span
+                    >
+                    <checkbox
+                      v-model="menu.general.isActive"
+                      @update:modelValue="checkboxUpdated(menu)"
+                    />
+                  </div>
                   <div class="p-1 hover:bg-indigo-400 rounded-full m-2">
                     <mdi-delete
                       class="text-3xl p-1 text-gray-200"
-                      @click="openMenuForm"
+                      @click="deleteMenu(key)"
                     />
                   </div>
                   <div class="p-1 hover:bg-indigo-400 rounded-full m-2">
                     <mdi-edit
                       class="text-3xl p-1 text-gray-200"
-                      @click="openMenuForm"
+                      @click="openMenuForm(key)"
                     />
                   </div>
                 </div>
@@ -59,7 +76,10 @@
                   </div>
                 </div>
                 <div class="flex flex-row justify-between p-4">
-                  <router-link to="/categories" class="p-1">
+                  <router-link
+                    :to="'/categories/' + menu.general.alias"
+                    class="p-1"
+                  >
                     <div class="flex flex-col justify-center items-center">
                       <img class="h-36 w-36" src="/categories.svg" alt="" />
                       <span class="text-md font-bold text-gray-600">
@@ -68,7 +88,10 @@
                     </div>
                   </router-link>
 
-                  <router-link to="/products" class="p-1">
+                  <router-link
+                    :to="'/products/' + menu.general.alias"
+                    class="p-1"
+                  >
                     <div class="flex flex-col items-center">
                       <img class="h-36 w-36" src="/products.svg" alt="" />
                       <span class="text-md font-bold text-gray-600">
@@ -88,10 +111,16 @@
               </div>
               <div class="sm:hidden" v-if="showQR">
                 <!--  <img :src="menu.general.imageUrl" alt="" class="h-24"> -->
-                <Qrcode :menuUrl="menuUrl" class="transform scale-75" />
+                <Qrcode
+                  :menuUrl="menu.general.alias"
+                  class="transform scale-75"
+                />
               </div>
               <div class="hidden sm:block">
-                <Qrcode :menuUrl="menuUrl" class="transform scale-75" />
+                <Qrcode
+                  :menuUrl="menu.general.alias"
+                  class="transform scale-75"
+                />
               </div>
             </div>
           </div>
@@ -101,35 +130,84 @@
   </div>
   <div>
     <Modal ref="menuFormModal" :title="'ÜRÜN BİLGİLERİ'">
-      <MenuForm :menuKey="menuKey" @close="closeMenuForm" />
+      <MenuForm :selectedMenu="selectedMenu" @close="closeMenuForm" />
     </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, getCurrentInstance } from "vue";
 import { db } from "../directives/firebase";
-const userId = "user3";
+
+const mainUser = ""
+let userId = "user3";
 const menus = ref({});
+const selectedMenu = ref("");
+const showQR = ref(false);
+const customers = ref([]);
+const selectedCustomer = ref('')
+const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 onMounted(() => {
-  db.ref(userId).on("value", (snapshot) => {
+  if (mainUser === "admin") {
+     db.ref("users").on("value", (snapshot) => {
     const data = snapshot.val();
-    menus.value = Object.values(data);
+    console.log("s", snapshot);
+    Object.keys(data).forEach((item) => {
+      Object.values(data[item]).forEach((el) => {
+        customers.value.push({ customerId: item, menuId: el });
+      });
+    });
   });
+
+  } else {
+    db.ref(userId).on("value", (snapshot) => {
+      const data = snapshot.val();
+      menus.value = data;
+    });
+  }
 });
 
-const showQR = ref(false);
 
+function updateUserId(value) {
+  console.log(value)
+  userId = value
+   db.ref(userId).on("value", (snapshot) => {
+      const data = snapshot.val();
+      menus.value = data;
+    });
+}
+
+function deleteMenu(value) {
+  swalAlert({
+    title: "Menüyü silmek istediğinizden emin misiniz?",
+    showDenyButton: true,
+    confirmButtonText: `Evet, silelim.`,
+    denyButtonText: `Hayır, kalsın.`
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      console.log(value);
+      db.ref(userId).child(value).remove();
+    }
+  });
+}
+
+function checkboxUpdated(menu) {
+  db.ref(userId)
+    .child(menu.general.alias + "/general")
+    .update({ isActive: menu.general.isActive });
+}
+
+// MODAL
 const menuFormModal = ref(null);
-const menuKey = ref("");
-const menuUrl = ref(""); // TODO: bu databaseden gelecek!
-const selection = ref("");
+
 function closeMenuForm() {
   menuFormModal.value.closeModal();
-  //isOpen.value = false
 }
+
 function openMenuForm(key) {
+  selectedMenu.value = menus.value[key];
   menuFormModal.value.openModal();
 }
 </script>

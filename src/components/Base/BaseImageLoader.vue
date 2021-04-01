@@ -29,17 +29,18 @@
 </template>
 
 <script setup>
-import { reactive, ref, defineEmit } from "vue";
-const imageUrl = ref("");
-const imageInput = ref("");
-const image = ref(null);
+import { reactive, ref, defineEmit, defineProps } from "vue";
 
 function pickImage() {
-  console.log("mmmm");
   imageInput.value.click();
 }
 
-const emit = defineEmit(['imageUploaded'])
+const emit = defineEmit(["imageUploaded"]);
+const props = defineProps({ existingImageUrl: String });
+
+const imageUrl = ref(props.existingImageUrl || "");
+const imageInput = ref("");
+const image = ref(null);
 
 function imagePicked(event) {
   const files = event.target.files;
@@ -59,7 +60,6 @@ function imagePicked(event) {
   })
     .then((rawImage) => {
       return new Promise(function (resolve, reject) {
-        console.log("raw", rawImage);
         let canvas = document.createElement("canvas");
         const MAX_WIDTH = 400;
         const scaleSize = MAX_WIDTH / rawImage.width;
@@ -72,13 +72,10 @@ function imagePicked(event) {
         canvas.toBlob(function (blob) {
           resolve(URL.createObjectURL(blob));
         }, "image/webp");
-
-        
       });
     })
     .then((imageURL) => {
-     
-      emit("imageUploaded", imageURL )
+      emit("imageUploaded", imageURL);
       return new Promise(function (resolve, reject) {
         let scaledImg = new Image();
 
@@ -87,102 +84,19 @@ function imagePicked(event) {
         });
 
         scaledImg.setAttribute("src", imageURL);
-      
-      })
+      });
     })
     .then((data) => {
-      console.log("ssss", data)
       imageUrl.value = data.imageURL;
-      emit("imageUploaded", data.imageURL)
-      
+      emit("imageUploaded", data.imageURL);
     });
 }
 
-/*   const fileReader = new FileReader();
-  fileReader.addEventListener("load", () => {
-    imageUrl.value = fileReader.result;
-  });
-  fileReader.readAsDataURL(files[0]);
-  image.value = files[0];
-}
- */
 function removeImage() {
   imageUrl.value = "";
   image.value = null;
+  emit("imageRemoved");
 }
-
-/**
- * DİKKKAT
- */
-
-/*
-function processFile(file) {
-  if (!file) {
-    return;
-  }
-  console.log(file);
-
-  let imageBox = addImageBox(refs.imagePreviews);
-
-  // Load the data into an image
-  new Promise(function (resolve, reject) {
-    let rawImage = new Image();
-
-    rawImage.addEventListener("load", function () {
-      resolve(rawImage);
-    });
-
-    rawImage.src = URL.createObjectURL(file);
-  })
-    .then(function (rawImage) {
-      // Convert image to webp ObjectURL via a canvas blob
-      return new Promise(function (resolve, reject) {
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
-
-        canvas.width = rawImage.width;
-        canvas.height = rawImage.height;
-        ctx.drawImage(rawImage, 0, 0);
-
-        canvas.toBlob(function (blob) {
-          resolve(URL.createObjectURL(blob));
-        }, "image/webp");
-      });
-    })
-    .then(function (imageURL) {
-      // Load image for display on the page
-      return new Promise(function (resolve, reject) {
-        let scaledImg = new Image();
-
-        scaledImg.addEventListener("load", function () {
-          resolve({ imageURL, scaledImg });
-        });
-
-        scaledImg.setAttribute("src", imageURL);
-      });
-    })
-    .then(function (data) {
-      // Inject into the DOM
-      let imageLink = document.createElement("a");
-
-      imageLink.setAttribute("href", data.imageURL);
-      imageLink.setAttribute("download", `${file.name}.webp`);
-      imageLink.appendChild(data.scaledImg);
-
-      imageBox.innerHTML = "";
-      imageBox.appendChild(imageLink);
-    });
-}
-
-function fileSelectorChanged() {
-  processFiles(refs.fileSelector.files);
-  refs.fileSelector.value = "";
-}
-
-
-refs.fileSelector.addEventListener("change", fileSelectorChanged);
-
-*/
 </script>
 
 <style lang="postcss" scoped></style>

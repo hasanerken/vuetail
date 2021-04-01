@@ -1,32 +1,44 @@
 <template>
   <div class="flex flex-row justify-center">
     <BaseButton @click="openCategoryForm">
-      <span class="font-semibold">Yeni Kategori Ekle</span>
+      <span class="font-semibold">YENİ KATEGORİ</span>
     </BaseButton>
   </div>
   <CategoryTable @selectedRow="openCategoryForm" />
   <!-- CATEGORY FORM MODAL  -->
-  <Modal ref="categoryFormModal" :title="'KATEGORİ BİLGİLERİ'" > 
-    <CategoryForm :categoryKey="catogeryKey" @close="closeCategoryForm" />
+  <Modal ref="categoryFormModal" :title="'KATEGORİ BİLGİLERİ'">
+    <CategoryForm
+      :selectedCategory="selectedCategory"
+      :alias="alias"
+      @close="closeCategoryForm"
+    />
   </Modal>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRoute } from "vue-router";
+
+const userId = "user3";
+const categories = ref({});
+const selectedCategory = ref({});
+const route = useRoute();
+const alias = ref(route.params.alias);
+
+// MODAL MANAGEMENT
 const categoryFormModal = ref(null);
-const categoryKey = ref("");
-const selection = ref("");
 function closeCategoryForm() {
-  console.log("...");
   categoryFormModal.value.closeModal();
-  //isOpen.value = false
-}
-function openCategoryForm(key) {
-  console.log("md", key);
-  categoryKey.value = key;
-  categoryFormModal.value.openModal();
 }
 
+function openCategoryForm(category) {
+  if (typeof category.title === "string") {
+    selectedCategory.value = category;
+  } else {
+    selectedCategory.value = "new";
+  }
+  categoryFormModal.value.openModal();
+}
 </script>
 
 <style lang="postcss" scoped></style>

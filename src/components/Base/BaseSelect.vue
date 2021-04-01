@@ -16,12 +16,11 @@
           @click="cleanSelection"
         />
       </div>
-      <div :class="isOpen ? 'rotate down' : 'rotate' ">
+      <div :class="isOpen ? 'rotate down' : 'rotate'">
         <mdi-chevron-down
-          class="ml-3 rotate "
+          class="ml-3 rotate"
           :class="isOpen ? 'text-indigo-600 down' : 'text-indigo-300'"
         ></mdi-chevron-down>
-        
       </div>
     </div>
     <div
@@ -41,16 +40,25 @@
         </div>
       </div>
     </div>
-  
   </div>
 </template>
 
 <script setup>
-import { ref, defineEmit, defineProps } from "vue";
+import { ref, defineEmit, defineProps, watchEffect } from "vue";
 const emit = defineEmit(["update:modelValue"]);
-const props = defineProps({items: Array, title: String})
+const props = defineProps({
+  items: Array,
+  title: String,
+  currentSelection: String
+});
 const isOpen = ref(false);
-const selectedItem = ref(props.title);
+const selectedItem = ref(props.currentSelection || props.title);
+
+watchEffect(() => {
+  if (props.currentSelection !== '') {
+    selectedItem.value = props.currentSelection;
+  }
+});
 
 function setSelectedItem(item) {
   selectedItem.value = item;
@@ -68,17 +76,16 @@ function hideMenu() {
 </script>
 
 <style lang="postcss" scoped>
-.rotate{
-    -moz-transition: all 2s linear;
-    -webkit-transition: all 2s linear;
-    transition: all 500ms ease-in-out;
+.rotate {
+  -moz-transition: all 2s linear;
+  -webkit-transition: all 2s linear;
+  transition: all 500ms ease-in-out;
 }
 
-.rotate.down{
-    -ms-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg) translateX(-10px);
-    
+.rotate.down {
+  -ms-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg) translateX(-10px);
 }
 </style>

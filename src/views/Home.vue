@@ -29,7 +29,7 @@
         artık mümkün...
       </p>
       <div class="flex flex-row justify-end pt-10 pb-4 px-4 w-full">
-        <router-link to="/general" class="">
+        <router-link to="/menus" class="">
           <BaseButton>
             <span class="font-semibold mx-4">GİRİŞ</span>
           </BaseButton>
@@ -82,23 +82,9 @@
       </div>
     </div>
   </div>
-  <div id="pricing" class="flex flex-row justify-center bg-yellow-50">
-    <div
-      class="bg-gradient-to-t from-indigo-400 to-blue-800 shadow-2xl my-10 w-screen mx-4 md:w-1/2"
-    >
-      <div class="bg-gray-900 p-3 text-purple-50">
-        <h2 class="text-xl">KAMPANYA FİYATLARIMIZ:</h2>
-      </div>
-      <div
-        class="p-3 text-center border-l border-r border-b text-purple-50 border-indigo-500"
-      >
-        <p class="leading-10 text-2xl">İLK YIL:</p>
-        <p class="text-3xl font-bold p-2">480 TL + KDV</p>
-        <p class="pt-3 text-2xl">SONRAKİ YILLAR:</p>
-        <br />
-        <p class="text-3xl pb-4 font-extrabold">%50 İNDİRİM</p>
-      </div>
-    </div>
+  <div id="pricing" class="flex flex-row justify-center ">
+    <Pricing />
+   
   </div>
 
 <div id="contact" class=" h-72 flex justify-center items-center">

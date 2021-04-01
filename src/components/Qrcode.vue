@@ -2,6 +2,7 @@
   <div>
     <div class="flex flex-col items-center justify-center">
       <div id="qrCode" class="p-2">
+       
         <div
           class="flex flex-col justify-center items-center m-2 p-2 border border-gray-400 rounded-md bg-white"
           style="width: 300px"
@@ -14,8 +15,10 @@
 
           <QrcodeVue :value="url" :size=240 level="H" />
 
-          <div class="text-gray-500 text-md">menunuzburada.com</div>
+          <div class="text-gray-500 text-sm">menunuzburada.com/{{menuUrl}}</div>
         </div>
+
+       
       </div>
       <div class="flex flex-row space-x-2 mb-3">
         <button
@@ -42,10 +45,10 @@ import { ref, defineProps, defineEmit, watch, watchEffect, computed } from "vue"
 import QrcodeVue from "qrcode.vue";
 import * as htmlToImage from "html-to-image";
 
-const props = defineProps({ customerUrl: String });
+const props = defineProps({ menuUrl: String });
 
 const url = computed(() => {
-    return `https://menunuzburada.com/${props.customerUrl}`
+    return `https://menunuzburada.com/${props.menuUrl}`
 })
 
 function saveQrCode(value) {
