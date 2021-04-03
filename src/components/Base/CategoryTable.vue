@@ -1,9 +1,7 @@
 <template>
   <div class="m-1 sm:m-4 z-0">
     <div class="table-header h-12">
-      <div class="col-span-2 sm:col-span-1 inline-flex items-center">
-       SIRA
-      </div>
+      <div class="col-span-2 sm:col-span-1 inline-flex items-center">SIRA</div>
       <div class="col-span-3 sm:col-span-2">RESİM</div>
       <div class="col-span-3 sm:col-span-3 text-left">KATEGORİ</div>
       <div class="hidden sm:block sm:col-span-4">TANITIM</div>
@@ -29,7 +27,7 @@
             <div class="inline-flex items-center">
               <mdi-drag class="text-xl text-gray-300" />
               <span class="text-xs">
-                {{ index + 1}}
+                {{ index + 1 }}
               </span>
             </div>
           </div>
@@ -38,7 +36,7 @@
               v-if="category.imageUrl"
               :src="category.imageUrl"
               alt=""
-              class="h-16"
+              class="h-10 sm:h-16"
             />
             <div v-else class="">
               <div
@@ -66,10 +64,10 @@
             class="col-span-2 sm:col-span-1 inline-flex items-center justify-center cursor-pointer"
           >
             <div
-              class="p-1 duration-300 transition hover:bg-gray-400 rounded-full m-2"
+              class="p-1 duration-300 transition hover:bg-gray-300 rounded-full m-2"
             >
               <mdi-delete
-                class="text-3xl p-1 text-gray-300"
+                class="text-3xl p-1 text-gray-500"
                 @click="deleteCategory(category.id)"
               />
             </div>
@@ -88,14 +86,15 @@
   </div>
 </template>
 
-
 <script setup>
 import { VueDraggableNext } from "vue-draggable-next";
 import {
   ref,
   onMounted,
   defineEmit,
-  getCurrentInstance
+  getCurrentInstance,
+  watchEffect,
+  watch
 } from "vue";
 import { db } from "../../directives/firebase";
 import { useRoute } from "vue-router";
@@ -111,28 +110,33 @@ const dragging = ref(false);
 const txt = ref("");
 const categories = ref([]);
 
-const userId = "user3";
-
 function log(event) {
-    categories.value.forEach((item, index) => {
-      db.ref(userId)
+  categories.value.forEach((item, index) => {
+    db.ref("menus")
       .child(alias + "/categories/" + item.id)
       .update({ sortNumber: index });
-    })
+  });
 }
 
 function selectRow(category) {
   emit("selectedRow", category);
 }
 
-// DATABASE MANAGEMENT
-onMounted(() => {
-  db.ref(userId)
-    .child(alias)
+watchEffect(() => {
+  console.log(alias);
+  db.ref("menus")
+    .child(alias + "/categories")
     .on("value", (snapshot) => {
       const data = snapshot.val();
-      const tempCategories = Object.values(data.categories)
-      categories.value = tempCategories.sort((a,b) => a.sortNumber - b.sortNumber )
+      if(data) {
+        console.log(data);
+        const tempCategories = Object.values(data);
+        categories.value = tempCategories.sort(
+          (a, b) => a.sortNumber - b.sortNumber
+        );
+      } else {
+        categories.value = []
+      }
     });
 });
 
@@ -144,7 +148,7 @@ function deleteCategory(categoryId) {
     denyButtonText: `Hayır, kalsın.`
   }).then((result) => {
     if (result.isConfirmed) {
-      db.ref(userId)
+      db.ref("menus")
         .child(alias + "/categories/" + categoryId)
         .remove();
     }
@@ -152,7 +156,7 @@ function deleteCategory(categoryId) {
 }
 
 function updateVisibility(category) {
-  db.ref(userId)
+  db.ref("menus")
     .child(alias + "/categories/" + category.id)
     .update({ isVisible: category.isVisible });
 }

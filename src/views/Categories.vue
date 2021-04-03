@@ -19,7 +19,7 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 
-const userId = "user3";
+
 const categories = ref({});
 const selectedCategory = ref({});
 const route = useRoute();

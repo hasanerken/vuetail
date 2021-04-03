@@ -6,7 +6,7 @@
       <div
         class="flex flex-row justify-center items-center border-b-2 border-gray-800"
       >
-        <img src="payment.svg" alt="" class="w-24 sm:w-48 my-2 mx-6" />
+        <img src="/payment.svg" alt="" class="w-24 sm:w-48 my-2 mx-6" />
         <div class="text-2xl sm:text-3xl md:text-5xl font-extrabold">
           Ücret Politikamız
         </div>

@@ -1,5 +1,9 @@
 <template>
   <div>
+      <div class="ml-10 mr-10 text-center">{{ title }}</div>
+     <div class="">
+       <img :src="logoUrl" alt="" class="h-12 absolute top-2 right-2">
+     </div>
     <div class="flex flex-row justify-center">
       <BaseSelect
         v-model="product.category"
@@ -70,20 +74,21 @@ const alias = ref(route.params.alias);
 
 const items = ref([]);
 const props = defineProps({ selectedProduct: Object || String });
-const userId = "user3";
+
 
 const product = reactive({
-  title: props.selectedProduct.title || "",
-  category: props.selectedProduct.category || "",
-  description: props.selectedProduct.description || "",
-  contents: props.selectedProduct.contents || "",
-  options: props.selectedProduct.options || "",
-  description: props.selectedProduct.description ||  "",
-  price: props.selectedProduct.price || null,
-  id: props.selectedProduct.id || "",
-  isVisible: props.selectedProduct.isVisible || true,
-  imageUrl: props.selectedProduct.imageUrl ||  "",
-  sortNumber: props.selectedProduct.sortNumber ||  -1
+  title: props.selectedProduct?.title || "",
+  category: props.selectedProduct?.category || "",
+  description: props.selectedProduct?.description || "",
+  contents: props.selectedProduct?.contents || "",
+  options: props.selectedProduct?.options || "",
+  description: props.selectedProduct?.description ||  "",
+  price: props.selectedProduct?.price || null,
+  id: props.selectedProduct?.id || "",
+  isVisible: props.selectedProduct?.isVisible || true,
+  imageUrl: props.selectedProduct?.imageUrl ||  "",
+  sortNumber: props.selectedProduct?.sortNumber ||  -1,
+  userId: props.selectedProduct?.userId || 'user3'
 });
 
 const emit = defineEmit(["close"]);
@@ -94,11 +99,15 @@ const productFormModal = ref(null);
 const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 onMounted(() => {
-  db.ref(userId)
+  db.ref('menus')
     .child(alias.value + "/categories")
     .once("value")
     .then((snapshot) => {
-      items.value = Object.values(snapshot.val()).map((item) => item.title);
+      items.value = Object.values(snapshot.val()).map((item) => {
+        return {
+          id: item.id, title: item.title
+        }
+      });
     });
 });
 
@@ -120,11 +129,11 @@ function saveProduct() {
   const productId = Date.now().toString();
   let productRef = "";
   if (typeof props.selectedProduct === "string") {
-    productRef = db.ref("user3").child(alias.value + "/products/" + productId);
+    productRef = db.ref("menus").child(alias.value + "/products/" + productId);
     product.id = productId;
   } else {
     productRef = db
-      .ref("user3")
+      .ref("menus")
       .child(alias.value + "/products/" + props.selectedProduct?.id);
   }
 

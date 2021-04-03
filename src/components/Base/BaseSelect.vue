@@ -9,7 +9,7 @@
       :class="isOpen ? 'rounded-t-md' : 'rounded-md'"
     >
       <div class="flex flex-row items-center text-sm">
-        {{ selectedItem }}
+        {{ selectedItem.title || selectedItem }}
 
         <mdi-close
           class="absolute right-8 text-gray-300 hover:text-indigo-800 hover:bg-gray-200 hover:rounded-full text-2xl p-1"
@@ -36,7 +36,7 @@
           class="p-2 text-sm border-b first:border-t border-indigo-50 text-gray-900"
           @click="setSelectedItem(item)"
         >
-          {{ item }}
+          {{ item.title || item }}
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@ const emit = defineEmit(["update:modelValue"]);
 const props = defineProps({
   items: Array,
   title: String,
-  currentSelection: String
+  currentSelection: Object || String
 });
 const isOpen = ref(false);
 const selectedItem = ref(props.currentSelection || props.title);

@@ -1,13 +1,13 @@
 <template>
-  <div class="h-full bg-white py-2 shadow-xl">
+  <div class="h-auto bg-white py-2 shadow-xl">
     <div class="flex flex-row justify-center">
       <BaseButton @click="openMenuForm('new')">
         <span class="font-semibold">YENİ MENÜ</span>
       </BaseButton>
     </div>
     <div v-if="mainUser === 'admin' " class="m-4 flex justify-center">
-    <select name="customers" id="customers" v-model="selectedCustomer" @change="updateUserId(selectedCustomer)">
-      <option v-for="(customer, index) in customers" :key="index">{{customer.customerId}}</option>
+    <select name="customers" id="customers" v-model="selectedCustomer" @change="changeMenu(selectedCustomer)">
+      <option v-for="(customer, index) in customers" :key="index">{{customer.menuId}}</option>
     </select>
     </div>
     <div class="flex flex-row flex-wrap justify-center items-stretch">
@@ -36,9 +36,9 @@
                       @update:modelValue="checkboxUpdated(menu)"
                     />
                   </div>
-                  <div class="p-1 hover:bg-indigo-400 rounded-full m-2">
+                  <div class="p-1 hover:bg-gray-300 rounded-full m-2">
                     <mdi-delete
-                      class="text-3xl p-1 text-gray-200"
+                      class="text-3xl p-1 text-gray-500"
                       @click="deleteMenu(key)"
                     />
                   </div>
@@ -104,12 +104,12 @@
 
               <div
                 class="sm:hidden relative bg-indigo-900 h-12 text-center hover:bg-indigo-600 text-gray-50 p-2 font-bold mt-2 rounded-sm cursor-pointer"
-                @click="showQR = !showQR"
+                @click="showQrCode"
               >
                 <mdi-qrcode-scan class="absolute text-xl left-2 top-3" />
                 <span> QR KODU GÖSTER </span>
               </div>
-              <div class="sm:hidden" v-if="showQR">
+              <div class="sm:hidden" v-if="showQR" >
                 <!--  <img :src="menu.general.imageUrl" alt="" class="h-24"> -->
                 <Qrcode
                   :menuUrl="menu.general.alias"
@@ -133,6 +133,7 @@
       <MenuForm :selectedMenu="selectedMenu" @close="closeMenuForm" />
     </Modal>
   </div>
+  
 </template>
 
 <script setup>
@@ -140,7 +141,6 @@ import { ref, onMounted, getCurrentInstance } from "vue";
 import { db } from "../directives/firebase";
 
 const mainUser = ""
-let userId = "user3";
 const menus = ref({});
 const selectedMenu = ref("");
 const showQR = ref(false);
@@ -150,7 +150,7 @@ const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 onMounted(() => {
   if (mainUser === "admin") {
-     db.ref("users").on("value", (snapshot) => {
+    db.ref("users").on("value", (snapshot) => {
     const data = snapshot.val();
     console.log("s", snapshot);
     Object.keys(data).forEach((item) => {
@@ -161,7 +161,7 @@ onMounted(() => {
   });
 
   } else {
-    db.ref(userId).on("value", (snapshot) => {
+    db.ref('menus').on("value", (snapshot) => {
       const data = snapshot.val();
       menus.value = data;
     });
@@ -169,11 +169,11 @@ onMounted(() => {
 });
 
 
-function updateUserId(value) {
-  console.log(value)
-  userId = value
-   db.ref(userId).on("value", (snapshot) => {
+function changeMenu(menuId) {
+  console.log(menuId)
+   db.ref('menus').orderByChild('general/userId').equalTo('user3').on("value", (snapshot) => {
       const data = snapshot.val();
+      console.log(data)
       menus.value = data;
     });
 }
@@ -188,13 +188,14 @@ function deleteMenu(value) {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       console.log(value);
-      db.ref(userId).child(value).remove();
+      db.ref('menus').child(value).remove();
     }
   });
 }
 
 function checkboxUpdated(menu) {
-  db.ref(userId)
+  console.log(menu)
+  db.ref('menus')
     .child(menu.general.alias + "/general")
     .update({ isActive: menu.general.isActive });
 }
@@ -210,6 +211,11 @@ function openMenuForm(key) {
   selectedMenu.value = menus.value[key];
   menuFormModal.value.openModal();
 }
+
+function showQrCode(){
+  showQR.value = !showQR.value
+}
+
 </script>
 
 <style lang="css" scoped></style>

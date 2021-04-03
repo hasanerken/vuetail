@@ -2,9 +2,12 @@
   <div class="h-full py-2 shadow-xl">
     <div class="flex flex-col sm:flex-row text-left sm:text-left my-5 mx-4 justify-between items-center">
      
-      <div class="w-1/2 flex justify-center items-center mb-2 sm:mb-0">
+      <div class="sm:w-1/2 flex justify-center items-center mb-2 sm:mb-0">
         <BaseButton @click="openProductForm">
           <span class="font-semibold text-center text-xs sm:text-md p-1">YENİ ÜRÜN</span>
+        </BaseButton>
+        <BaseButton @click="getAllProducts">
+          <span class="font-semibold text-center text-xs sm:text-md p-1">TÜM ÜRÜNLER</span>
         </BaseButton>
       
       </div>
@@ -40,14 +43,24 @@ const route = useRoute();
 const alias = ref(route.params.alias);
 
 onMounted(() => {
-  db.ref(userId)
+  db.ref('menus')
     .child(alias.value + "/categories")
     .once("value")
     .then((snapshot) => {
-      items.value = Object.values(snapshot.val()).map((item) => item.title);
+      
+      items.value = Object.values(snapshot.val()).map((item) => {
+         return {
+          id: item.id, title: item.title
+        }
+      });
+      console.log(items.value)
       selection.value = items.value[0]
     });
 });
+
+function getAllProducts() {
+  selection.value = "Tümü"
+}
 
 function closeProductForm() {
   console.log("...");

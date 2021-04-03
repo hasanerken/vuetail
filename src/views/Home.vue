@@ -86,6 +86,20 @@
     <Pricing />
    
   </div>
+  <div>
+  Referanslar
+
+ <div v-for="(customer, index) in customers" :key="index">
+   <div>
+     <router-link :to="'/' + customer.menuId ">
+
+     {{ customer }}
+     </router-link>
+   </div>
+
+ </div>
+
+</div>
 
 <div id="contact" class=" h-72 flex justify-center items-center">
   <div class="bg-red-100 h-48 w-screen  sm:w-1/2 m-2 rounded-2xl">
@@ -96,11 +110,37 @@
 </div>
 
 
+
   
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { db } from '../directives/firebase'
+import { ref, onMounted } from "vue";
+
+const customers = ref([])
+const mainUser = "admin"
+
+onMounted(() => {
+  if (mainUser === "admin") {
+    db.ref("users").on("value", (snapshot) => {
+    const data = snapshot.val();
+    console.log("s", snapshot);
+    Object.keys(data).forEach((item) => {
+      Object.values(data[item]).forEach((el) => {
+        customers.value.push({ customerId: item, menuId: el });
+      });
+    });
+  });
+
+  } else {
+    db.ref('menus').on("value", (snapshot) => {
+      const data = snapshot.val();
+      menus.value = data;
+    });
+  }
+});
+
 
 function scrollToId(id) {
   document.getElementById(id).scrollIntoView({

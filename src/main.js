@@ -16,7 +16,10 @@ const alertOptions = {
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { left: 0, top:0 };
+  }
 });
 
 let app;

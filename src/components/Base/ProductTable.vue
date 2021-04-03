@@ -53,7 +53,7 @@
             {{ product.title }}
           </div>
           <div class="hidden lg:block lg:col-span-1">
-            {{ product.category }}
+            {{ product.category.title }}
           </div>
           <div
             class="hidden md:block md:col-span-3 lg:col-span-1 md:line-clamp-2"
@@ -75,7 +75,7 @@
               v-if="product.imageUrl"
               :src="product.imageUrl"
               alt=""
-              class="w-10"
+              class="w-8 sm:w-12"
             />
             <div v-else class="">
               <div
@@ -96,7 +96,6 @@
             @keypress="isNumber($event)"
             @blur="updatePrice"
             @click="setProductId(product.id)"
-            
           >
             {{ product.price }}
           </div>
@@ -114,10 +113,10 @@
             class="hidden text-center sm:col-span-1 sm:flex md:col-span-1 justify-center items-center"
           >
             <div
-              class="flex w-12 hover:bg-gray-400 transition duration-300 h-12 items-center justify-center rounded-full"
+              class="flex w-12 hover:bg-gray-200 transition duration-300 h-12 items-center justify-center rounded-full"
             >
               <mdi-delete
-                class="text-3xl p-1 text-gray-300"
+                class="text-3xl p-1 text-gray-500"
                 @click="deleteCategory(category.id)"
               />
             </div>
@@ -172,7 +171,7 @@ const enabled = ref(true);
 const dragging = ref(false);
 const txt = ref("");
 const products = ref([]);
-const props = defineProps({ category: { type: String } });
+const props = defineProps({ category: { type: Object || String } });
 const filteredProducts = ref([]);
 // const numberOfRows = ref(0);
 // const pageSize = ref(10);
@@ -181,17 +180,33 @@ const filteredProducts = ref([]);
 const userId = "user3";
 
 watchEffect(() => {
-  if (props.category !== "") {
-    db.ref(userId)
+  if (props.category === "Tümü") {
+    db.ref("menus")
       .child(alias + "/products/")
-      .orderByChild("category")
-      .equalTo(props.category)
       .on("value", (snapshot) => {
         const data = snapshot.val();
-        const tempProducts = Object.values(data);
-        products.value = tempProducts.sort(
-          (a, b) => a.sortNumber - b.sortNumber
-        );
+        if (data) {
+          const tempProducts = Object.values(data);
+          products.value = tempProducts.sort(
+            (a, b) => a.sortNumber - b.sortNumber
+          );
+        } 
+      });
+  } else if (props.category !== "") {
+    db.ref("menus")
+      .child(alias + "/products/")
+      .orderByChild("category/id")
+      .equalTo(props.category.id)
+      .on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const tempProducts = Object.values(data);
+          products.value = tempProducts.sort(
+            (a, b) => a.sortNumber - b.sortNumber
+          );
+        } else {
+          products.value = [];
+        }
       });
   }
 
@@ -230,7 +245,7 @@ function deleteCategory(productId) {
     denyButtonText: `Hayır, kalsın.`
   }).then((result) => {
     if (result.isConfirmed) {
-      db.ref(userId)
+      db.ref("menus")
         .child(alias + "/products/" + productId)
         .remove();
     }
@@ -241,17 +256,17 @@ let productId;
 
 function updatePrice(event) {
   const newPrice = event.target.innerText;
-  db.ref(userId)
+  db.ref("menus")
     .child(alias + "/products/" + productId)
     .update({ price: newPrice });
 }
 
 function setProductId(value) {
-  productId = value
+  productId = value;
 }
 
 function updateVisibility(product) {
-  db.ref(userId)
+  db.ref("menus")
     .child(alias + "/products/" + product.id)
     .update({ isVisible: product.isVisible });
 }
@@ -287,22 +302,21 @@ function clearCategories() {
 function log(event) {
   products.value.forEach((item, index) => {
     console.log(item.id, item.sortNumber, index);
-    db.ref(userId)
+    db.ref("menus")
       .child(alias + "/products/" + item.id)
       .update({ sortNumber: index });
   });
 }
 
-
 function isNumber(evt) {
-      evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();;
-      } else {
-        return true;
-      }
-    }
+  evt = evt ? evt : window.event;
+  var charCode = evt.which ? evt.which : evt.keyCode;
+  if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+    evt.preventDefault();
+  } else {
+    return true;
+  }
+}
 
 /* const paginatedProducts = computed(() => {
   return filteredProducts.value.slice(firstRow.value - 1, lastRow.value);

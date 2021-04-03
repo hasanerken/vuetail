@@ -4,7 +4,7 @@
       <div class="backdrop" @click="closeModal" />
 
       <div class="dialog-box mt-10 sm:mt-12 md:mt-16">
-        <div class="dialog-header">
+        <div v-if="title" class="dialog-header">
           <div>{{ title }}</div>
           <div class="dialog-close transition duration-1000 ease-in-out">
             <button type="button" class="z-10" @click="closeModal">
@@ -59,7 +59,7 @@ export default {
 }
 
 .dialog-box {
-  @apply bg-white relative flex flex-col rounded-md z-30   max-w-sm mx-auto ;
+  @apply bg-white relative flex flex-col rounded-md z-30   max-w-sm mx-auto;
 }
 
 .dialog-close {

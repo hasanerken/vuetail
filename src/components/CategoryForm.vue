@@ -59,7 +59,6 @@ const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 const items = ref(["Yiyecekler", "İçecekler", "Aperatifler", "Tatlılar"]);
 const props = defineProps({ selectedCategory: Object, alias: String });
 const emit = defineEmit(["close"]);
-const userId = "user3";
 
 const category = reactive({
   title: props.selectedCategory?.title || "",
@@ -67,7 +66,8 @@ const category = reactive({
   id: props.selectedCategory?.id || "",
   imageUrl: props.selectedCategory?.imageUrl || "",
   isVisible: props.selectedCategory?.isVisible || true,
-  sortNumber: props.selectedCategory?.sortNumber || -1
+  sortNumber: props.selectedCategory?.sortNumber || -1,
+  userId: props.selectedCategory?.userId || 'user3'
 });
 
 const text = ref("");
@@ -88,12 +88,12 @@ function saveCategory() {
   let categoryRef = "";
   if (typeof props.selectedCategory === "string") {
     categoryRef = db
-      .ref("user3")
+      .ref("menus")
       .child(props.alias + "/categories/" + categoryId);
     category.id = categoryId;
   } else {
     categoryRef = db
-      .ref("user3")
+      .ref("menus")
       .child(props.alias + "/categories/" + props.selectedCategory?.id);
   }
 

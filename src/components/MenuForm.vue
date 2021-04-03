@@ -55,10 +55,10 @@ const menu = reactive({
   phone: props.selectedMenu?.general.phone || "",
   address: props.selectedMenu?.general.address || "",
   imageUrl: props.selectedMenu?.general.imageUrl || "",
-  isActive: props.selectedMenu?.general.isActive || true
+  isActive: props.selectedMenu?.general.isActive || true,
+  userId: props.selectedMenu?.userId || 'user3'
 });
 
-const userId = "user3";
 
 // TODO: databaseden gelmezse üretilecek, değiştirilirse üretilecek!
 const alias = computed(() => {
@@ -102,10 +102,10 @@ async function saveMenu() {
    
   if (menu.alias === "") {
     menu.alias = alias.value;
-    menuRef = db.ref(userId).child(alias.value + "/general");
-    db.ref('users').child(userId).push().set(alias.value);
+    menuRef = db.ref('menus').child(alias.value + "/general");
+    db.ref('users').child('user3').push().set(alias.value);
   } else {
-    menuRef = db.ref(userId).child(menu.alias + "/general");
+    menuRef = db.ref('menus').child(menu.alias + "/general");
   }
 
   if (
