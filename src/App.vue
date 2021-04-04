@@ -78,7 +78,8 @@
 import { ref } from "vue";
 import { auth } from './directives/firebase'
 
-const userId = ref(auth.currentUser.uid)
+
+const userId = ref(auth?.currentUser?.uid)
 const pages = ref([
   { path: `/menus/${userId.value}`, title: "MENÜLER", icon: "/design.svg" },
 /*   {
