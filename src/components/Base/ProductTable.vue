@@ -158,7 +158,7 @@ import {
   getCurrentInstance,
   watchEffect
 } from "vue";
-import { db } from "../../directives/firebase";
+import { db, auth } from "../../directives/firebase";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
@@ -177,7 +177,7 @@ const filteredProducts = ref([]);
 // const pageSize = ref(10);
 // const firstRow = ref(1);
 // const lastRow = ref(20);
-const userId = "user3";
+const userId = auth.currentUser.uid;
 
 watchEffect(() => {
   if (props.category === "Tümü") {

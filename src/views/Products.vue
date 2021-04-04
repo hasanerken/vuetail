@@ -31,14 +31,14 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { db } from "../directives/firebase";
+import { db, auth } from "../directives/firebase";
 import { useRoute } from "vue-router";
 
 const productFormModal = ref(null);
 const selection = ref("");
 const selectedProduct = ref({})
 const items = ref([]);
-const userId = "user3";
+const userId = auth.currentUser.uid;
 const route = useRoute();
 const alias = ref(route.params.alias);
 

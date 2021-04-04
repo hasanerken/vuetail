@@ -88,7 +88,7 @@ const product = reactive({
   isVisible: props.selectedProduct?.isVisible || true,
   imageUrl: props.selectedProduct?.imageUrl ||  "",
   sortNumber: props.selectedProduct?.sortNumber ||  -1,
-  userId: props.selectedProduct?.userId || 'user3'
+  userId: props.selectedProduct?.userId || auth.currentUser.uid
 });
 
 const emit = defineEmit(["close"]);

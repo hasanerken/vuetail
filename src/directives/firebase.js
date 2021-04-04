@@ -27,5 +27,6 @@ let storage = firebaseApp.storage()
 export {
   db,
   auth,
-  storage
+  storage,
+  firebase
 };

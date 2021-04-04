@@ -67,7 +67,7 @@ const category = reactive({
   imageUrl: props.selectedCategory?.imageUrl || "",
   isVisible: props.selectedCategory?.isVisible || true,
   sortNumber: props.selectedCategory?.sortNumber || -1,
-  userId: props.selectedCategory?.userId || 'user3'
+  userId: props.selectedCategory?.userId || auth.currentUser.uid
 });
 
 const text = ref("");

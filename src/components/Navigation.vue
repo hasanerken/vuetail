@@ -23,13 +23,24 @@
           class="grid grid-cols-2 gap-2 justify-center items-center text-2xl my-10 text-white"
         >
           <div v-for="category in categories" :key="category.id" class="">
-           <router-link :to="'/' + alias + '/' + category.id">
+            <router-link
+              v-if="category.imageUrl !== ''"
+              :to="'/' + alias + '/' + category.id"
+            >
               <div
                 @click="goToPage(category.id)"
                 class="hover:border-2 cursor-pointer hover:border-indigo-200 hover:shadow-inner relative bg-indigo-600 shadow-xl transition transform hover:scale-105 duration-300 rounded-sm"
               >
                 <img :src="category.imageUrl" alt="" />
                 <div class="band">{{ category.title }}</div>
+              </div>
+            </router-link>
+            <router-link v-else :to="'/' + alias + '/' + category.id">
+              <div
+                @click="goToPage(category.id)"
+                class="cursor-pointer text-gray-800 hover:text-indigo-700 transition transform hover:scale-105 p-2 relative text-xl text-center"
+              >
+                <div class="">{{ category.title }}</div>
               </div>
             </router-link>
           </div>

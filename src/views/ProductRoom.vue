@@ -62,12 +62,18 @@
       />
     </div>
   </div>
+  <div class="h-24"></div>
+
   <Modal ref="bookmarkedProductsModal" title="" class="px-3 py-32">
     <div v-if="hasBookmarked">
+     
       <div
         class="text-xl text-red-800 font-extrabold text-center p-2 border-b-2 m-2 border-red-800"
       >
+      <div class="flex flex-row items-center justify-center">
+       <mdi-bookmark-multiple class="absolute left-5 text-3xl" />
         SEÇTİĞİNİZ ÜRÜNLER
+        </div>
       </div>
       <div v-for="product in bookmarkedProducts" :key="product.id">
         <div class="text-xl flex flex-row items-center m-3">
@@ -76,9 +82,15 @@
         </div>
       </div>
     </div>
-    <div v-else>Seçtiğiniz ürün bulunmamaktadır.</div>
+    <div v-else>
+      <div class="text-lg text-center font-bold">
+        <div class="p-4">
+        Seçtiğiniz ürün bulunmamaktadır.
+        </div>
+        <img src="/empty.svg" alt="">
+      </div>
+    </div>
   </Modal>
-
 </template>
 
 <script setup>
@@ -95,7 +107,7 @@ const logoUrl = ref("");
 const categories = ref([]);
 const bookmarkedProducts = ref({});
 const bookmarkedProductsModal = ref(null);
-const hasBookmarked = ref(false)
+const hasBookmarked = ref(false);
 
 onMounted(() => {
   scrollToId("top");
@@ -119,8 +131,6 @@ onMounted(() => {
     });
 });
 
-
-
 watchEffect(() => {
   db.ref("menus")
     .child(alias + "/products/")
@@ -131,7 +141,7 @@ watchEffect(() => {
       if (data) {
         console.log(data);
 
-        const tempProducts = Object.values(data);
+        const tempProducts = Object.values(data).filter(item => item.isVisible === true);
         products.value = tempProducts.sort(
           (a, b) => a.sortNumber - b.sortNumber
         );
@@ -140,7 +150,7 @@ watchEffect(() => {
       }
     });
 
-    hasBookmarked.value = Object.keys(bookmarkedProducts.value).length > 0
+  hasBookmarked.value = Object.keys(bookmarkedProducts.value).length > 0;
 });
 
 function addItem(payload) {

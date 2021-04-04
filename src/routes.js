@@ -15,7 +15,7 @@ export const routes = [
     component: () => import("./views/ProductRoom.vue")
   },
   {
-    path: "/menus",
+    path: "/menus/:userId",
     meta: { title: "İşletme Bilgileri" },
     component: () => import("./views/Menus.vue")
   },

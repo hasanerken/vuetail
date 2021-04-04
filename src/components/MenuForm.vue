@@ -42,21 +42,21 @@ import {
   defineProps,
   getCurrentInstance
 } from "vue";
-import { db, storage } from "../directives/firebase";
+import { db, storage, auth} from "../directives/firebase";
 
 const props = defineProps({ selectedMenu: Object });
 const emit = defineEmit(["close"]);
 const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal
 
 const menu = reactive({
-  city: props.selectedMenu?.general.city || "",
-  title: props.selectedMenu?.general.title || "",
-  alias: props.selectedMenu?.general.alias || "",
-  phone: props.selectedMenu?.general.phone || "",
-  address: props.selectedMenu?.general.address || "",
-  imageUrl: props.selectedMenu?.general.imageUrl || "",
-  isActive: props.selectedMenu?.general.isActive || true,
-  userId: props.selectedMenu?.userId || 'user3'
+  city: props.selectedMenu?.city || "",
+  title: props.selectedMenu?.title || "",
+  alias: props.selectedMenu?.alias || "",
+  phone: props.selectedMenu?.phone || "",
+  address: props.selectedMenu?.address || "",
+  imageUrl: props.selectedMenu?.imageUrl || "",
+  isActive: props.selectedMenu?.isActive || true,
+  userId: props.selectedMenu?.userId || auth.currentUser.uid
 });
 
 
@@ -103,7 +103,7 @@ async function saveMenu() {
   if (menu.alias === "") {
     menu.alias = alias.value;
     menuRef = db.ref('menus').child(alias.value + "/general");
-    db.ref('users').child('user3').push().set(alias.value);
+    db.ref('users').child(auth.currentUser.uid).push().set(alias.value);
   } else {
     menuRef = db.ref('menus').child(menu.alias + "/general");
   }

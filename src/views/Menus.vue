@@ -5,11 +5,23 @@
         <span class="font-semibold">YENİ MENÜ</span>
       </BaseButton>
     </div>
-    <div v-if="mainUser === 'admin' " class="m-4 flex justify-center">
-    <select name="customers" id="customers" v-model="selectedCustomer" @change="changeMenu(selectedCustomer)">
-      <option v-for="(customer, index) in customers" :key="index">{{customer.menuId}}</option>
-    </select>
+
+    <div
+      v-if="userId === 'toi51XBqdiX2yrZdA47xfAoROg52'"
+      class="m-4 flex justify-center"
+    >
+      <select
+        name="customers"
+        id="customers"
+        v-model="selectedCustomer"
+        @change="changeMenu(selectedCustomer)"
+      >
+        <option v-for="(customer, index) in customers" :key="index">
+          {{ customer.menuId }}
+        </option>
+      </select>
     </div>
+
     <div class="flex flex-row flex-wrap justify-center items-stretch">
       <div v-for="(menu, key) in menus" :key="key">
         <div class="max-w-2xl flex-1 items-stretch">
@@ -18,34 +30,34 @@
           >
             <div class="">
               <div
-                :class="menu.general.isActive ? 'bg-indigo-600' : 'bg-gray-400'"
+                :class="menu.isActive ? 'bg-indigo-600' : 'bg-gray-400'"
                 class="flex flex-row justify-between items-center rounded-t-md"
               >
                 <h1 class="text-xl font-semibold pl-4 text-gray-50 text-center">
-                  {{ menu.general.title }}
+                  {{ menu.title }}
                 </h1>
                 <div class="flex flex-row">
                   <div class="flex flex-row items-center p-2">
                     <span
-                      v-if="!menu.general.isActive"
+                      v-if="!menu.isActive"
                       class="font-bold px-2 text-xs text-gray-900"
                       >MENU KAPALI</span
                     >
                     <checkbox
-                      v-model="menu.general.isActive"
+                      v-model="menu.isActive"
                       @update:modelValue="checkboxUpdated(menu)"
                     />
                   </div>
                   <div class="p-1 hover:bg-gray-300 rounded-full m-2">
                     <mdi-delete
                       class="text-3xl p-1 text-gray-500"
-                      @click="deleteMenu(key)"
+                      @click="deleteMenu(menu.alias)"
                     />
                   </div>
                   <div class="p-1 hover:bg-indigo-400 rounded-full m-2">
                     <mdi-edit
                       class="text-3xl p-1 text-gray-200"
-                      @click="openMenuForm(key)"
+                      @click="openMenuForm(menu.alias)"
                     />
                   </div>
                 </div>
@@ -64,22 +76,19 @@
                             >ADRES:</span
                           >
                           <br />
-                          {{ menu.general.address }}
+                          {{ menu.address }}
                         </div>
                         <div class="p-1">
                           <span class="font-bold text-gray-600">TELEFON:</span>
                           <br />
-                          {{ menu.general.phone }}
+                          {{ menu.phone }}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="flex flex-row justify-between p-4">
-                  <router-link
-                    :to="'/categories/' + menu.general.alias"
-                    class="p-1"
-                  >
+                  <router-link :to="'/categories/' + menu.alias" class="p-1">
                     <div class="flex flex-col justify-center items-center">
                       <img class="h-36 w-36" src="/categories.svg" alt="" />
                       <span class="text-md font-bold text-gray-600">
@@ -88,10 +97,7 @@
                     </div>
                   </router-link>
 
-                  <router-link
-                    :to="'/products/' + menu.general.alias"
-                    class="p-1"
-                  >
+                  <router-link :to="'/products/' + menu.alias" class="p-1">
                     <div class="flex flex-col items-center">
                       <img class="h-36 w-36" src="/products.svg" alt="" />
                       <span class="text-md font-bold text-gray-600">
@@ -109,18 +115,12 @@
                 <mdi-qrcode-scan class="absolute text-xl left-2 top-3" />
                 <span> QR KODU GÖSTER </span>
               </div>
-              <div class="sm:hidden" v-if="showQR" >
+              <div class="sm:hidden" v-if="showQR">
                 <!--  <img :src="menu.general.imageUrl" alt="" class="h-24"> -->
-                <Qrcode
-                  :menuUrl="menu.general.alias"
-                  class="transform scale-75"
-                />
+                <Qrcode :menuUrl="menu.alias" class="transform scale-75" />
               </div>
               <div class="hidden sm:block">
-                <Qrcode
-                  :menuUrl="menu.general.alias"
-                  class="transform scale-75"
-                />
+                <Qrcode :menuUrl="menu.alias" class="transform scale-75" />
               </div>
             </div>
           </div>
@@ -133,48 +133,68 @@
       <MenuForm :selectedMenu="selectedMenu" @close="closeMenuForm" />
     </Modal>
   </div>
-  
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance } from "vue";
+import { ref, onMounted, getCurrentInstance, watchEffect, watch } from "vue";
 import { db } from "../directives/firebase";
+import { useRoute } from "vue-router";
 
-const mainUser = ""
-const menus = ref({});
+const route = useRoute();
+
+const mainUser = "admin";
+const menus = ref([]);
+const userId = ref(route.params.userId);
 const selectedMenu = ref("");
 const showQR = ref(false);
 const customers = ref([]);
-const selectedCustomer = ref('')
+const selectedCustomer = ref("");
 const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 onMounted(() => {
-  if (mainUser === "admin") {
-    db.ref("users").on("value", (snapshot) => {
+  getCustomers();
+  db.ref("menus")
+    .orderByChild("general/userId")
+    .equalTo(userId.value)
+    .on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        menus.value = [];
+        console.log(data);
+        Object.values(data).forEach((item) => {
+          menus.value.push(item.general);
+        });
+      }
+    });
+});
+
+function getCustomers() {
+  db.ref("users").on("value", (snapshot) => {
     const data = snapshot.val();
     console.log("s", snapshot);
     Object.keys(data).forEach((item) => {
-      Object.values(data[item]).forEach((el) => {
-        customers.value.push({ customerId: item, menuId: el });
+      customers.value = [];
+      Object.keys(data[item]).forEach((key) => {
+        customers.value.push({
+          customerId: item,
+          menuKey: key,
+          menuId: data[item][key]
+        });
       });
     });
   });
-
-  } else {
-    db.ref('menus').on("value", (snapshot) => {
-      const data = snapshot.val();
-      menus.value = data;
-    });
-  }
-});
-
+}
 
 function changeMenu(menuId) {
-  console.log(menuId)
-   db.ref('menus').orderByChild('general/userId').equalTo('user3').on("value", (snapshot) => {
+  console.log(menuId);
+  db.ref("menus")
+    .child(menuId + "/general")
+    .once("value")
+    .then((snapshot) => {
       const data = snapshot.val();
-      console.log(data)
-      menus.value = data;
+      console.log(data);
+      menus.value = [];
+      menus.value.push(data);
     });
 }
 
@@ -188,16 +208,28 @@ function deleteMenu(value) {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
       console.log(value);
-      db.ref('menus').child(value).remove();
+      db.ref("menus").child(value).remove();
+      const menuKey = customers.value.find((item) => item.menuId === value)
+        .menuKey;
+      const customerId = customers.value.find((item) => item.menuId === value)
+        .customerId;
+      db.ref("users")
+        .child(customerId + "/" + menuKey)
+        .remove();
+      if (userId.value === "toi51XBqdiX2yrZdA47xfAoROg52") {
+        menus.value = [];
+      }
     }
   });
 }
 
 function checkboxUpdated(menu) {
-  console.log(menu)
-  db.ref('menus')
-    .child(menu.general.alias + "/general")
-    .update({ isActive: menu.general.isActive });
+  if (typeof menu === "string") {
+    console.log(menu);
+    db.ref("menus")
+      .child(menu.alias + "/general")
+      .update({ isActive: menu.isActive });
+  }
 }
 
 // MODAL
@@ -208,14 +240,13 @@ function closeMenuForm() {
 }
 
 function openMenuForm(key) {
-  selectedMenu.value = menus.value[key];
+  selectedMenu.value = menus.value.find((item) => item.alias === key);
   menuFormModal.value.openModal();
 }
 
-function showQrCode(){
-  showQR.value = !showQR.value
+function showQrCode() {
+  showQR.value = !showQR.value;
 }
-
 </script>
 
-<style lang="css" scoped></style>
+<style lang="postcss" scoped></style>
