@@ -2,7 +2,7 @@
   <div
     class="w-screen bg-gray-600 p-3 sm:p-36 flex flex-row justify-center items-center"
   >
-    <div class="max-w-6xl bg-gray-100 p-5 sm:p-10">
+    <div id="pricing"  class="max-w-6xl bg-gray-100 p-5 sm:p-10">
       <div
         class="flex flex-row justify-center items-center border-b-2 border-gray-800"
       >
@@ -19,7 +19,7 @@
       <div class="flex flex-col lg:flex-row items-center justify-center">
         
 <div
-          class="my-2 sm:mx-2 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-500 h-full w-full border-2 border-blue-600 shadow-2xl"
+          class="my-2 sm:mx-2 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-500 h-full w-full border border-blue-600 shadow-2xl"
         >
           <div
             class="p-6 text-center text-4xl font-light text-gray-50 border-b"
@@ -43,7 +43,7 @@
           <div class="flex flex-row items-center">
             <div class="h-2 w-2 bg-white m-4"></div>
             <div class="text-lg text-gray-50">
-              Sözleşeme yenilemelerde %50 indirim hakkı
+              Sözleşme yenilemelerde %50 indirim hakkı
             </div>
           </div>
           <div class="flex flex-row items-center">
@@ -60,7 +60,7 @@
           </div>
         </div>
         <div
-          class="my-2 sm:mx-2 bg-gradient-to-r from-red-400 via-pink-500 to-pink-400 h-full w-full border-2 border-pink-600 shadow-2xl"
+          class="my-2 sm:mx-2 bg-gradient-to-r from-red-400 via-pink-500 to-pink-400 h-full w-full border border-pink-600 shadow-2xl"
         >
           <div
             class="p-6 text-center text-4xl font-light text-gray-50 border-b"
@@ -84,7 +84,7 @@
           <div class="flex flex-row items-center">
             <div class="h-2 w-2 bg-white m-4"></div>
             <div class="text-lg text-gray-50">
-              Sözleşeme yenilemelerde %50 indirim hakkı
+              Sözleşme yenilemelerde %50 indirim hakkı
             </div>
           </div>
           <div class="flex flex-row items-center">
@@ -102,7 +102,7 @@
         </div>
         
         <div
-          class="my-2 sm:mx-2 bg-gradient-to-r from-purple-400 via-indigo-500 to-indigo-400 h-full w-full border-2 border-indigo-600 shadow-2xl"
+          class="my-2 sm:mx-2 bg-gradient-to-r from-purple-400 via-indigo-500 to-indigo-400 h-full w-full border border-indigo-600 shadow-2xl"
         >
           <div
             class="p-6 text-center text-4xl font-light text-gray-50 border-b"
@@ -126,7 +126,7 @@
           <div class="flex flex-row items-center">
             <div class="h-2 w-2 bg-white m-4"></div>
             <div class="text-lg text-gray-50">
-              Sözleşeme yenilemelerde %50 indirim hakkı
+              Sözleşme yenilemelerde %50 indirim hakkı
             </div>
           </div>
           <div class="flex flex-row items-center">

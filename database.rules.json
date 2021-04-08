@@ -1,6 +1,15 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "menus": {
+      ".read": "true",
+      "$menu" : {
+      ".indexOn": "general/userId",
+    	".write": "(data.child('general/userId').val() == auth.uid) || (!data.exists() && auth != null) || (auth.uid == 'toi51XBqdiX2yrZdA47xfAoROg52') "
+    }
+      },
+    "users": {
+      ".read": true,
+      ".write": true
+    }
   }
 }

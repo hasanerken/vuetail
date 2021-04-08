@@ -9,46 +9,47 @@
     <div
       class="max-w-screen-xl md:w-1/2 flex flex-col justify-start items-start"
     >
-    <div class="relative">
-      <h2
-        class="mb-3 text-2xl lg:leading-tight font-extrabold tracking-tight sm:py-8 text-gray-900 sm:text-5xl"
-      >
-        Menünüzü
-        <span class="text-indigo-800 leading-tight">kolayca&nbsp;</span> ve
-        <span class="text-blue-800 leading-tight">hızlıca &nbsp;</span> yönetin,
-        <span class="text-purple-800">anında</span> &nbsp;güncelleyin
-      </h2>
-      <p class="font-light text-lg sm:text-2xl">
-        Elden ele dolaşan basılı menüler yerine QR kodlu menülere geçerek
-        ürünlerinizi
-        <span class="tracking-wide text-pink-500 font-bold"> temassız </span>
-        bir şekilde müşterilerinizin kendi telefonlarından görebilmelerini
-        sağlayabilirsiniz. Menünüzü, her zaman
-        <span class="text-pink-500 font-bold">en güncel</span> ürün bilgileriyle
-        müşterilerinize <span class="text-pink-500 font-bold"> hızlı </span> ve
-        <span class="text-pink-500 font-bold"> kolay </span>bir şekilde sunmanız
-        artık mümkün...
-      </p>
+      <div class="relative">
+        <h2
+          class="mb-3 text-2xl lg:leading-tight font-extrabold tracking-tight sm:py-8 text-gray-900 sm:text-5xl"
+        >
+          Menünüzü
+          <span class="text-indigo-800 leading-tight">kolayca&nbsp;</span> ve
+          <span class="text-blue-800 leading-tight">hızlıca &nbsp;</span>
+          yönetin, <span class="text-purple-800">anında</span> &nbsp;güncelleyin
+        </h2>
+        <p class="font-light text-lg sm:text-2xl">
+          Elden ele dolaşan basılı menüler yerine QR kodlu menülere geçerek
+          ürünlerinizi
+          <span class="tracking-wide text-pink-500 font-bold"> temassız </span>
+          bir şekilde müşterilerinizin kendi telefonlarından görebilmelerini
+          sağlayabilirsiniz. Menünüzü, her zaman
+          <span class="text-pink-500 font-bold">en güncel</span> ürün
+          bilgileriyle müşterilerinize
+          <span class="text-pink-500 font-bold"> hızlı </span> ve
+          <span class="text-pink-500 font-bold"> kolay </span>bir şekilde
+          sunmanız artık mümkün...
+        </p>
       </div>
-      <Login v-if="loginForm"  class="" @close="loginForm = false" />
+      <Login v-if="loginForm" class="" @close="loginForm = false" />
       <div class="flex flex-row justify-end pt-10 pb-4 px-4 w-full">
-       <!--  <router-link to="/menus" class=""> -->
-          <BaseButton @click="showLoginForm">
-            <span class="font-semibold mx-4">GİRİŞ</span>
-          </BaseButton>
-<!--         </router-link>
- -->        <BaseButton @click="scrollToId('benefits')">
-
-
-
+        <!--  <router-link to="/menus" class=""> -->
+        <BaseButton @click="showLoginForm">
+          <span class="font-semibold mx-4">GİRİŞ</span>
+        </BaseButton>
+        <!--         </router-link>
+ -->
+        <BaseButton @click="scrollToId('benefits')">
           <span class="font-semibold mx-4"> DEVAM </span>
         </BaseButton>
       </div>
-  
     </div>
   </div>
 
-  <div class="flex flex-wrap items-stretch justify-center bg-gray-50" id="benefits">
+  <div
+    class="flex flex-wrap items-stretch justify-center bg-gray-50"
+    id="benefits"
+  >
     <div
       v-scroll-animation
       v-for="benefit in benefits"
@@ -74,7 +75,9 @@
         </div>
         <div class="w-full flex justify-center"></div>
 
-        <div class="bg-white shadow-md text-gray-800 p-5 text-md sm:text-lg font-light">
+        <div
+          class="bg-white shadow-md text-gray-800 p-5 text-md sm:text-lg font-light"
+        >
           <div class="p-1 text-justify">
             <div class="h-full w-12 bg-pink-400 mr-4 mt-1 float-left">
               <h1 class="text-5xl text-gray-50 font-bold">
@@ -89,7 +92,7 @@
       </div>
     </div>
   </div>
-  <div id="pricing" class="flex flex-row justify-center">
+  <div class="flex flex-row justify-center">
     <Pricing />
   </div>
   <div class="">
@@ -129,26 +132,27 @@
         </div>
       </div>
       <div class="p-2 text-center">
-        Cevat Dündar Cad. No:1 Ostim Teknopark Turuncu Bina No:53 <br>
-        Ostim OSB Yenimahalle / ANKARA 
+        Cevat Dündar Cad. No:1 Ostim Teknopark Turuncu Bina No:53 <br />
+        Ostim OSB Yenimahalle / ANKARA
       </div>
     </div>
-    <div class="h-24">
-
-    </div>
+    <div class="h-24"></div>
   </div>
 </template>
 
 <script setup>
-import { db } from "../directives/firebase";
+import { db, auth } from "../directives/firebase";
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 const customers = ref([]);
 const mainUser = "admin";
+const router = useRouter();
 
 onMounted(() => {
-  if (mainUser === "admin") {
-    db.ref("menus").on("value", (snapshot) => {
+  db.ref("menus")
+    .once("value")
+    .then((snapshot) => {
       const data = snapshot.val();
       console.log("s", snapshot);
       Object.values(data).forEach((item) => {
@@ -159,12 +163,6 @@ onMounted(() => {
         });
       });
     });
-  } else {
-    db.ref("menus").on("value", (snapshot) => {
-      const data = snapshot.val();
-      menus.value = data;
-    });
-  }
 });
 
 function scrollToId(id) {
@@ -173,9 +171,13 @@ function scrollToId(id) {
   });
 }
 
-const loginForm = ref(false)
-function showLoginForm(){
-  loginForm.value = true
+const loginForm = ref(false);
+function showLoginForm() {
+  if (auth?.currentUser?.uid) {
+    router.push("/menus/" + auth?.currentUser?.uid);
+  } else {
+    loginForm.value = true;
+  }
 }
 
 const benefits = ref([

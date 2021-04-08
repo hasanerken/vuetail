@@ -110,8 +110,7 @@ const toggleMenu = () => {
 }
 
 .band {
-  background-color: rgba(3, 3, 3, 0.7);
-  @apply absolute bottom-0 left-0 text-sm text-gray-50 w-full z-50;
+  @apply absolute bottom-0 left-0 text-sm text-gray-50 w-full z-50 p-3 bg-opacity-50 bg-gray-600 font-extralight;
 }
 
 @keyframes fadeInRight {

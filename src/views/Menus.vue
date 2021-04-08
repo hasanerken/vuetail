@@ -23,7 +23,7 @@
     </div>
 
     <div class="flex flex-row flex-wrap justify-center items-stretch">
-      <div v-for="(menu, key) in menus" :key="key">
+      <div v-for="(menu, index) in menus" :key="index">
         <div class="max-w-2xl flex-1 items-stretch">
           <div
             class="bg-gray-100 m-2 rounded-md border-purple-100 border shadow-xl"
@@ -129,7 +129,7 @@
     </div>
   </div>
   <div>
-    <Modal ref="menuFormModal" :title="'ÜRÜN BİLGİLERİ'">
+    <Modal ref="menuFormModal" :title="'MENÜ/ŞİRKET BİLGİLERİ'">
       <MenuForm :selectedMenu="selectedMenu" @close="closeMenuForm" />
     </Modal>
   </div>
@@ -139,12 +139,12 @@
 import { ref, onMounted, getCurrentInstance, watchEffect, watch } from "vue";
 import { db } from "../directives/firebase";
 import { useRoute } from "vue-router";
-
 const route = useRoute();
 
 const mainUser = "admin";
 const menus = ref([]);
 const userId = ref(route.params.userId);
+console.log("userid", userId.value);
 const selectedMenu = ref("");
 const showQR = ref(false);
 const customers = ref([]);
@@ -153,27 +153,62 @@ const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 onMounted(() => {
   getCustomers();
-  db.ref("menus")
+  console.log(userId.value)
+  db.ref('users')
+    .child(userId.value)
+    .on("value", (snapshot) => {
+      const data = snapshot.val();
+      console.log("dddd", data)
+      const listOfMenus = Object.values(data);
+      console.log(listOfMenus)
+      menus.value = [];
+      listOfMenus.forEach((menuId) => {
+        db.ref("menus")
+          .child(menuId)
+          // .orderByChild("general/userId")
+          //.equalTo('BFybhvKnriTJ7biOnBGpKeEh0Nl1')
+          .on("value", (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              console.log("burası mount", data);
+              menus.value.push(data.general)
+              /* Object.values(data.general).forEach((item) => {
+                console.log("inside object values", item);
+                menus.value.push(item);
+              }); */
+            }
+          });
+      });
+    });
+});
+
+/* watchEffect(() => {
+   db.ref("menus")
     .orderByChild("general/userId")
     .equalTo(userId.value)
     .on("value", (snapshot) => {
+      console.log("sssss", snapshot)
       const data = snapshot.val();
       if (data) {
         menus.value = [];
-        console.log(data);
+        console.log("burası mount", data);
         Object.values(data).forEach((item) => {
           menus.value.push(item.general);
         });
       }
+      else {
+        console.log("no data available")
+      }
     });
-});
+  
+}) */
 
 function getCustomers() {
   db.ref("users").on("value", (snapshot) => {
     const data = snapshot.val();
     console.log("s", snapshot);
+    customers.value = [];
     Object.keys(data).forEach((item) => {
-      customers.value = [];
       Object.keys(data[item]).forEach((key) => {
         customers.value.push({
           customerId: item,
@@ -218,6 +253,8 @@ function deleteMenu(value) {
         .remove();
       if (userId.value === "toi51XBqdiX2yrZdA47xfAoROg52") {
         menus.value = [];
+      } else {
+        location.reload();
       }
     }
   });

@@ -1,4 +1,5 @@
 <template>
+{{ customers }}
   <div class="">
     {{ selectedMenu }}
     <BaseSelect
@@ -8,7 +9,11 @@
       class="mb-3 m-1"
       v-model="menu.city"
     />
-    <BaseInput v-model="menu.title" :label="'ŞİRKET ADI'" :class="typeof selectedMenu === 'object' ? '' : '' " />
+    <BaseInput
+      v-model="menu.title"
+      :label="'MENÜ/ŞİRKET ADI'"
+      :class="typeof selectedMenu === 'object' ? '' : ''"
+    />
     <BaseInput v-model="menu.phone" :label="'TELEFON'" />
     <BaseInput v-model="menu.address" :label="'ADRES'" :autogrow="true" />
     <BaseImageLoader
@@ -38,15 +43,17 @@
 import {
   reactive,
   computed,
+  onMounted,
+  ref,
   defineEmit,
   defineProps,
   getCurrentInstance
 } from "vue";
-import { db, storage, auth} from "../directives/firebase";
+import { db, storage, auth } from "../directives/firebase";
 
 const props = defineProps({ selectedMenu: Object });
 const emit = defineEmit(["close"]);
-const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal
+const swalAlert = getCurrentInstance().appContext.config.globalProperties.$swal;
 
 const menu = reactive({
   city: props.selectedMenu?.city || "",
@@ -58,7 +65,6 @@ const menu = reactive({
   isActive: props.selectedMenu?.isActive || true,
   userId: props.selectedMenu?.userId || auth.currentUser.uid
 });
-
 
 // TODO: databaseden gelmezse üretilecek, değiştirilirse üretilecek!
 const alias = computed(() => {
@@ -95,20 +101,41 @@ async function updateImage(url) {
     );
 }
 
+const customers = ref([]);
+onMounted(() => {
+  getCustomers();
+})
+
+function getCustomers() {
+  db.ref("users").on("value", (snapshot) => {
+    const data = snapshot.val();
+    console.log("s", snapshot);
+    customers.value = [];
+    Object.keys(data).forEach((item) => {
+      Object.keys(data[item]).forEach((key) => {
+        customers.value.push(data[item][key]);
+      });
+    });
+  });
+}
+
 async function saveMenu() {
   let menuRef = "";
   let userRef = "";
-  
-   
+
   if (menu.alias === "") {
     menu.alias = alias.value;
-    menuRef = db.ref('menus').child(alias.value + "/general");
-    db.ref('users').child(auth.currentUser.uid).push().set(alias.value);
+    menuRef = db.ref("menus").child(alias.value + "/general");
   } else {
-    menuRef = db.ref('menus').child(menu.alias + "/general");
+    menuRef = db.ref("menus").child(menu.alias + "/general");
   }
 
-  if (
+  if(customers.value.includes(menu.alias)) {
+     swalAlert(
+      "Bu isim ile daha önce menü girilmiştir. Lütfen, farklı bir işletme/menü adı seçiniz."
+    );
+  }
+  else if (
     menu.title === "" ||
     menu.phone === "" ||
     menu.address === "" ||
@@ -118,8 +145,14 @@ async function saveMenu() {
       "Lütfen, menünün ait olduğu işletme bilgilerini eksiksiz giriniz."
     );
   } else {
-    menuRef.set(menu);
-    
+    menuRef
+      .set(menu)
+      .then((result) => {
+        db.ref("users").child(auth.currentUser.uid).push().set(alias.value);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   if (file) {
@@ -141,5 +174,4 @@ async function saveMenu() {
 }
 </script>
 
-<style lang="postcss" scoped>
-</style>
+<style lang="postcss" scoped></style>
