@@ -274,10 +274,10 @@
   resolved "https://registry.yarnpkg.com/@iconify/json-tools/-/json-tools-1.0.10.tgz#d9a7050dbbe8bb29d684d4b3f9446ed2d0bea3cc"
   integrity sha512-LFelJDOLZ6JHlmlAkgrvmcu4hpNPB91KYcr4f60D/exzU1eNOb4/KCVHIydGHIQFaOacIOD+Xy+B7P1z812cZg==
 
-"@iconify/json@^1.1.309":
-  version "1.1.319"
-  resolved "https://registry.yarnpkg.com/@iconify/json/-/json-1.1.319.tgz#4c4b6eb49b52762fb796a27c6916515c5723e728"
-  integrity sha512-wOfBhDboA08oj71+EaSyZ38q61aO9f/vShBwnuk+VPZ3CZQHPeZdmbtsYfTCutPfwp4BukYjZbL40YzBz0D4UA==
+"@iconify/json@^1.1.341":
+  version "1.1.341"
+  resolved "https://registry.yarnpkg.com/@iconify/json/-/json-1.1.341.tgz#818325671f05886cb79e89c504a1792731f27ac3"
+  integrity sha512-rGl01xY7V8SyYiGFyrOrPzEfUqooCxponcR4DvpgSE+pJJcu0HfmJP9Q1SbGJtQmVyMe23Z2uoBqB5ETckin7A==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
