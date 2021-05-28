@@ -1699,10 +1699,10 @@ vite-plugin-components@^0.7.4:
     fast-glob "npm:@knightly/fast-glob@master"
     minimatch "^3.0.4"
 
-vite-plugin-icons@^0.3.1:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/vite-plugin-icons/-/vite-plugin-icons-0.3.2.tgz#d44542f6d6569d21970e0859bd63893c08c2e97f"
-  integrity sha512-6HDBO6aqJLaJ8lkT9FChAUtniRRzhDWbhNzJLfT7QdDcQ2kaapReksngNEA1+tNlFd5Auey4VGS2VjI3V1KkvA==
+vite-plugin-icons@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-icons/-/vite-plugin-icons-0.6.0.tgz#f31b10fb99f2a778001d9ccd7e00ef9858b279ac"
+  integrity sha512-M6+9lsoXUMLB1idGpejb2sSRZI0LgBJGPvH69ixGgWyTLs21RFXME1wDXkQ1n1rXJBsH7q2ABo9Spk07qz/8sA==
   dependencies:
     "@iconify/json-tools" "^1.0.10"
     vue-template-es2015-compiler "^1.9.1"
